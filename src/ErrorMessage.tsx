@@ -1,7 +1,6 @@
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable no-use-before-define */
 
-// <ErrorMessageSnippet>
 import React from 'react';
 import { Alert } from 'reactstrap';
 
@@ -10,18 +9,11 @@ interface ErrorMessageProps {
   message: string;
 }
 
-export default class ErrorMessage extends React.Component<ErrorMessageProps> {
-  render() {
-    let debug = null;
-    if (this.props.debug) {
-      debug = <pre className="alert-pre border bg-light p-2"><code>{this.props.debug}</code></pre>;
-    }
-    return (
-      <Alert color="danger">
-        <p className="mb-3">{this.props.message}</p>
-        {debug}
-      </Alert>
-    );
-  }
-}
-// </ErrorMessageSnippet>
+const ErrorMessage = ({ debug, message } : ErrorMessageProps) => (
+  <Alert color="danger">
+    <p className="mb-3">{message}</p>
+    {debug && <pre className="alert-pre border bg-light p-2"><code>{debug}</code></pre>}
+  </Alert>
+);
+
+export default ErrorMessage;
