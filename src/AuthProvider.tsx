@@ -19,9 +19,9 @@ export interface AuthComponentProps {
   error: any;
   isAuthenticated: boolean;
   user: any;
-
   login: Function;
   logout: Function;
+  appLogin: Function;
   getAccessToken: Function;
   setError: Function;
 }
@@ -80,7 +80,6 @@ export default function withAuthProvider<
             account: accounts[0],
           },
         );
-        console.log(silentResult.accessToken);
         return silentResult.accessToken;
       } catch (err) {
         if (this.isInteractionRequired(err)) {
@@ -100,8 +99,6 @@ export default function withAuthProvider<
         const accessToken = await this.getAccessToken(config.scopes);
         if (accessToken) {
           const user = await getUserDetails(accessToken);
-          const appUserDetails = await retrieveUserDetails(accessToken);
-          console.log(appUserDetails);
           this.setState({
             isAuthenticated: true,
             user: {
@@ -109,7 +106,6 @@ export default function withAuthProvider<
               email: user.mail || user.userPrincipalName,
               timeZone: user.mailboxSettings.timeZone,
               timeFormat: user.mailboxSettings.timeFormat,
-              appRole: appUserDetails.userRole,
             },
             error: null,
           });
@@ -127,6 +123,18 @@ export default function withAuthProvider<
       this.setState({
         error: { message, debug },
       });
+    }
+
+    async appLogin() {
+      const accessToken = await this.getAccessToken(config.scopes);
+      const appUserDetails = await retrieveUserDetails(accessToken);
+      this.setState((prevState) => ({
+        user: {
+          ...prevState.user,
+          appRole: appUserDetails.userRole,
+        },
+        error: null,
+      }));
     }
 
     async login() {
@@ -187,6 +195,7 @@ export default function withAuthProvider<
           user={user}
           login={() => this.login()}
           logout={() => this.logout()}
+          appLogin={() => this.appLogin()}
           getAccessToken={(scopes: string[]) => this.getAccessToken(scopes)}
           setError={(message: string, debug: string) => this.setErrorMessage(message, debug)}
           {...this.props}

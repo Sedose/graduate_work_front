@@ -17,7 +17,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 class App extends Component<AuthComponentProps> {
   render() {
     const {
-      error, isAuthenticated, login, logout, user,
+      error, isAuthenticated, login, logout, appLogin, user,
     } = this.props;
 
     return (
@@ -25,7 +25,9 @@ class App extends Component<AuthComponentProps> {
         <div>
           <NavBar
             isAuthenticated={isAuthenticated}
-            authButtonMethod={isAuthenticated ? logout : login}
+            login={login}
+            logout={logout}
+            appLogin={appLogin}
             user={user}
           />
           <Container>

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable no-use-before-define */
 // Copyright (c) Microsoft Corporation.
@@ -19,9 +20,7 @@ const WelcomeContent = ({
 }: WelcomeProps) => (isAuthenticated && (
 <div>
   <h4>
-    Welcome
-    {user.displayName}
-    !
+    Welcome, {user.displayName}!
   </h4>
   <p>Use the navigation bar at the top of the page to get started.</p>
 </div>

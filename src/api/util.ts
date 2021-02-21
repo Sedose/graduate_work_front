@@ -2,7 +2,7 @@ const extractData = <T>(promise: Promise<Response>): Promise<T> => promise.then(
   if (!response.ok) {
     throw new Error(response.statusText);
   }
-  return response.json() as Promise<{ data: T }>;
-}).then((data) => data.data);
+  return response.json() as Promise<T>;
+});
 
 export default extractData;

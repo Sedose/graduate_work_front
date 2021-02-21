@@ -7,10 +7,10 @@ import extractData from './util';
 
 const retrieveUserDetails = (
   accessToken: string,
-): Promise<UserDetailsResponse> => extractData(fetch(
+): Promise<UserDetailsResponse> => extractData<UserDetailsResponse>(fetch(
   `${constants.DEFAULT_BACKEND_CONTEXT_PATH}/api/user-details`, {
     headers: {
-      Authentication: accessToken,
+      Authorization: accessToken,
     },
   },
 ));
