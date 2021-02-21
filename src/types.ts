@@ -11,11 +11,11 @@ export interface LoginResponse {
   userEmail: string,
 }
 
+export interface UserDetailsResponse {
+  userRole: string
+}
+
 export interface UserCoordinates {
   latitude: number,
   longitude: number,
-}
-
-export interface UserDetailsResponse {
-  userRole: string
 }

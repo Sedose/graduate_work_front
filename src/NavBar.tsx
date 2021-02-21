@@ -1,7 +1,8 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/jsx-filename-extension */
 // eslint-disable-next-line no-use-before-define
-import React, { useState } from 'react';
-import { NavLink as RouterNavLink } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { NavLink as RouterNavLink, Redirect } from 'react-router-dom';
 import {
   Button,
   Collapse,
@@ -24,7 +25,11 @@ interface NavBarProps {
   login: any;
   logout: any;
   appLogin: any;
-  user: any;
+  user: {
+    appRole: string;
+    displayName: string;
+    email: string;
+  };
 }
 
 const UserAvatar = ({ user }: any) => (user.avatar && (
@@ -47,37 +52,51 @@ const AuthNavItem = ({
   login,
   logout,
   appLogin,
-}: NavBarProps) => (isAuthenticated && (
-<>
-  <UncontrolledDropdown>
-    <DropdownToggle nav caret>
-      <UserAvatar user={user} />
-    </DropdownToggle>
-    <DropdownMenu right>
-      <h5 className="dropdown-item-text mb-0">{user.displayName}</h5>
-      <p className="dropdown-item-text text-muted mb-0">{user.email}</p>
-      <DropdownItem divider />
-      <DropdownItem onClick={logout}>Sign Out</DropdownItem>
-    </DropdownMenu>
-    <DropdownMenu right>
-      <h5 className="dropdown-item-text mb-0">{user.displayName}</h5>
-      <p className="dropdown-item-text text-muted mb-0">{user.email}</p>
-      <DropdownItem divider />
-      <DropdownItem onClick={appLogin}>Authorize me</DropdownItem>
-    </DropdownMenu>
-  </UncontrolledDropdown>
-</>
-)) || (
-<NavItem>
-  <Button
-    onClick={login}
-    className="btn-link nav-link border-0"
-    color="link"
-  >
-    Sign In
-  </Button>
-</NavItem>
-);
+}: NavBarProps) => {
+  const [mainPageLink, setMainPageLink] = useState('');
+
+  useEffect(() => {
+    const { appRole } = user;
+    const selectedPageLink = appRole === 'STUDENT'
+      ? 'student-main-page'
+      : appRole === 'LECTURER'
+        ? 'lecturer-main-page'
+        : appRole === 'TRAINING_REPRESENTATIVE'
+          ? 'training-representative-main-page'
+          : '/';
+    setMainPageLink(selectedPageLink);
+  });
+
+  return (
+    (
+      mainPageLink !== '/' && <Redirect to={mainPageLink} />
+    )
+    || (isAuthenticated && (
+      <UncontrolledDropdown>
+        <DropdownToggle nav caret>
+          <UserAvatar user={user} />
+        </DropdownToggle>
+        <DropdownMenu right>
+          <h5 className="dropdown-item-text mb-0">{user.displayName}</h5>
+          <p className="dropdown-item-text text-muted mb-0">{user.email}</p>
+          <DropdownItem divider />
+          <DropdownItem onClick={logout}>Sign Out</DropdownItem>
+          <DropdownItem onClick={appLogin}>Authorize me</DropdownItem>
+        </DropdownMenu>
+      </UncontrolledDropdown>
+    )) || (
+      <NavItem>
+        <Button
+          onClick={login}
+          className="btn-link nav-link border-0"
+          color="link"
+        >
+          Sign In
+        </Button>
+      </NavItem>
+    )
+  );
+};
 
 const NavBar = ({
   isAuthenticated,

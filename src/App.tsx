@@ -13,6 +13,9 @@ import NavBar from './NavBar';
 import ErrorMessage from './ErrorMessage';
 import Welcome from './Welcome';
 import 'bootstrap/dist/css/bootstrap.css';
+import StudentMainPage from './pages/student/StudentMainPage';
+import LecturerMainPage from './pages/lecturer/LecturerMainPage';
+import TrainingRepresentativeMainPage from './pages/training-representative/TrainingRepresentativeMainPage';
 
 class App extends Component<AuthComponentProps> {
   render() {
@@ -47,6 +50,27 @@ class App extends Component<AuthComponentProps> {
                   user={user}
                   authButtonMethod={login}
                 />
+              )}
+            />
+            <Route
+              exact
+              path="/student-main-page"
+              render={() => (
+                <StudentMainPage />
+              )}
+            />
+            <Route
+              exact
+              path="/lecturer-main-page"
+              render={() => (
+                <LecturerMainPage />
+              )}
+            />
+            <Route
+              exact
+              path="/training-representative-main-page"
+              render={() => (
+                <TrainingRepresentativeMainPage />
               )}
             />
           </Container>
