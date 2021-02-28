@@ -1,14 +1,32 @@
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable no-use-before-define */
-import React from 'react';
-import { Typography } from '@material-ui/core';
+import React, { useState } from 'react';
+import { Redirect } from 'react-router';
+import { Button, ButtonGroup, Jumbotron } from 'reactstrap';
+import styled from 'styled-components';
 
-const LecturerMainPage = () => (
-  <div>
-    <Typography paragraph>
-      Lecturer side
-    </Typography>
-  </div>
-);
+const ButtonGroupWrapper = styled.div`
+  margin: 12px 0px 0px;
+`;
+
+const LecturerMainPage = () => {
+  const [choiceRegisterProvidingFiles, setChoiceRegisterProvidingFiles] = useState(false);
+
+  return (
+    <>
+      {choiceRegisterProvidingFiles && <Redirect to="/register/providing-files" />}
+      <div>
+        <Jumbotron>
+          <div>Lecturer side</div>
+          <ButtonGroupWrapper>
+            <ButtonGroup>
+              <Button color="primary" onClick={() => setChoiceRegisterProvidingFiles(true)}>Register providing files</Button>
+            </ButtonGroup>
+          </ButtonGroupWrapper>
+        </Jumbotron>
+      </div>
+    </>
+  );
+};
 
 export default LecturerMainPage;

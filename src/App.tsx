@@ -8,6 +8,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Container } from 'reactstrap';
+import styled from 'styled-components';
 import withAuthProvider, { AuthComponentProps } from './AuthProvider';
 import NavBar from './NavBar';
 import ErrorMessage from './ErrorMessage';
@@ -16,16 +17,28 @@ import 'bootstrap/dist/css/bootstrap.css';
 import StudentMainPage from './pages/student/StudentMainPage';
 import LecturerMainPage from './pages/lecturer/LecturerMainPage';
 import TrainingRepresentativeMainPage from './pages/training-representative/TrainingRepresentativeMainPage';
+import { Copyright } from './component/Copyright';
+import RegisterProvidingFilesPage from './pages/lecturer/RegisterProvidingFilesPage';
+
+const PageDiv = styled.div`
+  oferflow: hidden;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Footer = styled.footer`
+  margin-bottom: auto;
+`;
 
 class App extends Component<AuthComponentProps> {
   render() {
     const {
-      error, isAuthenticated, login, logout, appLogin, user,
+      error, isAuthenticated, login, logout, appLogin, user, getAccessToken,
     } = this.props;
 
     return (
       <Router>
-        <div>
+        <PageDiv>
           <NavBar
             isAuthenticated={isAuthenticated}
             login={login}
@@ -73,8 +86,18 @@ class App extends Component<AuthComponentProps> {
                 <TrainingRepresentativeMainPage />
               )}
             />
+            <Route
+              exact
+              path="/register/providing-files"
+              render={() => (
+                <RegisterProvidingFilesPage getAccessToken={getAccessToken} />
+              )}
+            />
           </Container>
-        </div>
+          <Footer>
+            <Copyright />
+          </Footer>
+        </PageDiv>
       </Router>
     );
   }
