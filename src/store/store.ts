@@ -1,0 +1,7 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable import/extensions */
+import { applyMiddleware, createStore } from 'redux';
+import thunk from 'redux-thunk';
+import rootReducer from './reducer';
+
+export default createStore(rootReducer, applyMiddleware(thunk));

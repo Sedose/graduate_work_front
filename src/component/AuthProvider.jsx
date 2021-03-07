@@ -11,9 +11,9 @@
 import React, { useEffect, useState } from 'react';
 import { PublicClientApplication } from '@azure/msal-browser';
 
-import config from './Config';
-import { getUserDetails } from './GraphService';
-import backendApi from './api/backend-api';
+import config from '../Config';
+import { getUserDetails } from '../GraphService';
+import backendApi from '../api/backend-api';
 
 export default (WrappedComponent) => () => {
   const [error, setError] = useState();

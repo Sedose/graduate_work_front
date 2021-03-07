@@ -11,6 +11,8 @@ import styled from 'styled-components';
 import readXlsxFile from 'read-excel-file';
 import Papa from 'papaparse';
 import constants from '../../constants';
+import csvToJsonUtil from '../../application/csvToJsonUtil';
+import backendApi from '../../api/backend-api';
 
 const ButtonGroupWrapper = styled.div`
   margin: 12px 0px 0px;
@@ -50,40 +52,23 @@ export default ({ getAccessToken }) => {
   };
 
   const handleSubmission = async () => {
-    let jsonToSend;
+    const accessToken = await getAccessToken();
     if (selectedFile.fileExtension === 'csv') {
-      const json = Papa.parse(selectedFile.file, {
-        complete(results, file) {
-          console.log('Parsing complete:', results, file);
+      Papa.parse(selectedFile.file, {
+        complete(results) {
+          const sliced = results.data.slice(1);
+          backendApi.saveStudentsAttendanceFile(csvToJsonUtil(sliced))(accessToken);
+          console.log('csvToJsonUtil: ', csvToJsonUtil(sliced));
         },
       });
-      console.log(json);
     } else if (selectedFile.fileExtension === 'xlsx') {
       readXlsxFile(selectedFile.file, { schema }).then(({ rows, errors }) => {
-        console.log(rows);
+        console.log('rows: ', rows);
+        backendApi.saveStudentsAttendanceFile(rows)(accessToken);
       });
     } else {
       console.log('toast error fucking!!!');
     }
-
-    // const formData = new FormData();
-
-    // formData.append('file', selectedFile ?? '');
-
-    // fetch(`${constants.DEFAULT_BACKEND_API_PATH}/attendance-register-file`, {
-    //   method: 'POST',
-    //   body: formData,
-    //   headers: {
-    //     Authorization: await getAccessToken(),
-    //   },
-    // })
-    //   .then((response) => response.json())
-    //   .then((result) => {
-    //     console.log('Success:', result);
-    //   })
-    //   .catch((error) => {
-    //     console.error('Error:', error);
-    //   });
   };
 
   return (

@@ -32,8 +32,23 @@ const saveCoordinates = (
   body: JSON.stringify(coordinates),
 });
 
+const saveStudentsAttendanceFile = (
+  jsonToSend : any,
+) => async (accessToken: string) => {
+  console.log('api: ', jsonToSend);
+  return fetch(`${constants.DEFAULT_BACKEND_API_PATH}/attendance-register-file`, {
+    method: 'POST',
+    headers: {
+      Authorization: accessToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(jsonToSend),
+  });
+};
+
 export default {
   retrieveUserDetails,
   saveCoordinates,
   extractData,
+  saveStudentsAttendanceFile,
 };
