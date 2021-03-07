@@ -57,14 +57,16 @@ export default ({ getAccessToken }) => {
       Papa.parse(selectedFile.file, {
         complete(results) {
           const sliced = results.data.slice(1);
-          backendApi.saveStudentsAttendanceFile(csvToJsonUtil(sliced))(accessToken);
+          backendApi.saveStudentsAttendanceFile(
+            { attendances: csvToJsonUtil(sliced) },
+          )(accessToken);
           console.log('csvToJsonUtil: ', csvToJsonUtil(sliced));
         },
       });
     } else if (selectedFile.fileExtension === 'xlsx') {
       readXlsxFile(selectedFile.file, { schema }).then(({ rows, errors }) => {
         console.log('rows: ', rows);
-        backendApi.saveStudentsAttendanceFile(rows)(accessToken);
+        backendApi.saveStudentsAttendanceFile({ attendances: rows })(accessToken);
       });
     } else {
       console.log('toast error fucking!!!');

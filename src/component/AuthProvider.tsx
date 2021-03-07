@@ -16,8 +16,8 @@ import { getUserDetails } from '../GraphService';
 import backendApi from '../api/backend-api';
 
 export default (WrappedComponent) => () => {
-  const [error, setError] = useState();
-  const [isAuthenticated, setIsAuthenticated] = useState();
+  const [error, setError] = useState({ message: null, debug: null });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState({});
 
   const publicClientApplication = new PublicClientApplication({
@@ -33,8 +33,7 @@ export default (WrappedComponent) => () => {
 
   useEffect(() => {
     const accounts = publicClientApplication.getAllAccounts();
-
-    if (accounts?.length > 0) {
+    if (accounts?.length > 0 && !isAuthenticated) {
       getUserProfile();
     }
   });
@@ -77,11 +76,11 @@ export default (WrappedComponent) => () => {
           timeZone: appUser.mailboxSettings.timeZone,
           timeFormat: appUser.mailboxSettings.timeFormat,
         });
-        setError(null);
+        setError({ message: null, debug: null });
       }
     } catch (err) {
       setIsAuthenticated(false);
-      setUser(null);
+      setUser({});
       setError(normalizeError(err));
     }
   };
@@ -94,7 +93,7 @@ export default (WrappedComponent) => () => {
     const accessToken = await getAccessToken(config.scopes);
     const appUserDetails = await backendApi.retrieveUserDetails(accessToken);
     setUser((prevState) => ({ ...prevState, appRole: appUserDetails.userRole }));
-    setError(null);
+    setError({ message: null, debug: null });
   };
 
   const login = async () => {
