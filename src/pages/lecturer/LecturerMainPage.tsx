@@ -9,7 +9,7 @@ const ButtonGroupWrapper = styled.div`
   margin: 12px 0px 0px;
 `;
 
-const LecturerMainPage = () => {
+export default () => {
   const [choiceRegisterProvidingFiles, setChoiceRegisterProvidingFiles] = useState(false);
 
   return (
@@ -28,5 +28,3 @@ const LecturerMainPage = () => {
     </>
   );
 };
-
-export default LecturerMainPage;

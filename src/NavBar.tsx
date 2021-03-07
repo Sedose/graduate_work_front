@@ -98,7 +98,7 @@ const AuthNavItem = ({
   );
 };
 
-const NavBar = ({
+export default ({
   isAuthenticated,
   user,
   login,
@@ -151,5 +151,3 @@ const NavBar = ({
     </div>
   );
 };
-
-export default NavBar;

@@ -3,12 +3,10 @@
 import { Typography } from '@material-ui/core';
 import React from 'react';
 
-const TrainingRepresentativeMainPage = () => (
+export default () => (
   <div>
     <Typography paragraph>
       TrainingRepresentativeMainPage side
     </Typography>
   </div>
 );
-
-export default TrainingRepresentativeMainPage;

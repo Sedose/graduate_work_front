@@ -2,8 +2,14 @@
 /* eslint-disable import/no-unresolved */
 
 import constants from '../constants';
-import { UserDetailsResponse } from '../types';
-import extractData from './util';
+import { UserDetailsResponse, UserCoordinates } from '../types';
+
+const extractData = <T>(promise: Promise<Response>): Promise<T> => promise.then((response) => {
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+  return response.json() as Promise<T>;
+});
 
 const retrieveUserDetails = (
   accessToken: string,
@@ -15,4 +21,19 @@ const retrieveUserDetails = (
   },
 ));
 
-export default retrieveUserDetails;
+const saveCoordinates = (
+  coordinates : UserCoordinates,
+) => async (accessToken: string) => fetch(`${constants.DEFAULT_BACKEND_API_PATH}/v1/coordinates`, {
+  method: 'PUT',
+  headers: {
+    Authorization: accessToken,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(coordinates),
+});
+
+export default {
+  retrieveUserDetails,
+  saveCoordinates,
+  extractData,
+};

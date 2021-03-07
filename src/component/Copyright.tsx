@@ -8,7 +8,7 @@ const styles = {
   margin: 10,
 };
 
-export const Copyright = () => (
+export default () => (
   <div>
     <Typography style={styles} variant="body2" color="textSecondary" align="center">
       {`Copyright © Online log of visits ${new Date().getFullYear()}`}

@@ -5,11 +5,11 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable no-use-before-define */
 
-import React, { Component } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Container } from 'reactstrap';
 import styled from 'styled-components';
-import withAuthProvider, { AuthComponentProps } from './AuthProvider';
+import withAuthProvider from './AuthProvider';
 import NavBar from './NavBar';
 import ErrorMessage from './ErrorMessage';
 import Welcome from './Welcome';
@@ -17,7 +17,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import StudentMainPage from './pages/student/StudentMainPage';
 import LecturerMainPage from './pages/lecturer/LecturerMainPage';
 import TrainingRepresentativeMainPage from './pages/training-representative/TrainingRepresentativeMainPage';
-import { Copyright } from './component/Copyright';
+import Copyright from './component/Copyright';
 import RegisterProvidingFilesPage from './pages/lecturer/RegisterProvidingFilesPage';
 
 const PageDiv = styled.div`
@@ -30,77 +30,71 @@ const Footer = styled.footer`
   margin-bottom: auto;
 `;
 
-class App extends Component<AuthComponentProps> {
-  render() {
-    const {
-      error, isAuthenticated, login, logout, appLogin, user, getAccessToken,
-    } = this.props;
-
-    return (
-      <Router>
-        <PageDiv>
-          <NavBar
-            isAuthenticated={isAuthenticated}
-            login={login}
-            logout={logout}
-            appLogin={appLogin}
-            user={user}
-          />
-          <Container>
-            {error && (
-              <ErrorMessage
-                message={error.message}
-                debug={error.debug}
-              />
-            )}
-            <Route
-              exact
-              path="/"
-              render={(props) => (
-                <Welcome
-                  {...props}
-                  isAuthenticated={isAuthenticated}
-                  user={user}
-                  authButtonMethod={login}
-                />
-              )}
+const App = ({
+  error, isAuthenticated, login, logout, appLogin, user, getAccessToken,
+}: any) => (
+  <Router>
+    <PageDiv>
+      <NavBar
+        isAuthenticated={isAuthenticated}
+        login={login}
+        logout={logout}
+        appLogin={appLogin}
+        user={user}
+      />
+      <Container>
+        {error && (
+        <ErrorMessage
+          message={error.message}
+          debug={error.debug}
+        />
+        )}
+        <Route
+          exact
+          path="/"
+          render={(props) => (
+            <Welcome
+              {...props}
+              isAuthenticated={isAuthenticated}
+              user={user}
+              authButtonMethod={login}
             />
-            <Route
-              exact
-              path="/student-main-page"
-              render={() => (
-                <StudentMainPage />
-              )}
-            />
-            <Route
-              exact
-              path="/lecturer-main-page"
-              render={() => (
-                <LecturerMainPage />
-              )}
-            />
-            <Route
-              exact
-              path="/training-representative-main-page"
-              render={() => (
-                <TrainingRepresentativeMainPage />
-              )}
-            />
-            <Route
-              exact
-              path="/register/providing-files"
-              render={() => (
-                <RegisterProvidingFilesPage getAccessToken={getAccessToken} />
-              )}
-            />
-          </Container>
-          <Footer>
-            <Copyright />
-          </Footer>
-        </PageDiv>
-      </Router>
-    );
-  }
-}
+          )}
+        />
+        <Route
+          exact
+          path="/student-main-page"
+          render={() => (
+            <StudentMainPage />
+          )}
+        />
+        <Route
+          exact
+          path="/lecturer-main-page"
+          render={() => (
+            <LecturerMainPage />
+          )}
+        />
+        <Route
+          exact
+          path="/training-representative-main-page"
+          render={() => (
+            <TrainingRepresentativeMainPage />
+          )}
+        />
+        <Route
+          exact
+          path="/register/providing-files"
+          render={() => (
+            <RegisterProvidingFilesPage getAccessToken={getAccessToken} />
+          )}
+        />
+      </Container>
+      <Footer>
+        <Copyright />
+      </Footer>
+    </PageDiv>
+  </Router>
+);
 
 export default withAuthProvider(App);

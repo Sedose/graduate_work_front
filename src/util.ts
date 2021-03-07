@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify';
 
 const defaultDuration = 2000;
-const defaultPosition = "top-right";
+const defaultPosition = 'top-right';
 
 export const notifyWarnTopRight = (message: string) => toast.warn(message, {
   position: defaultPosition,

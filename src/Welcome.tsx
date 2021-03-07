@@ -30,7 +30,7 @@ const WelcomeContent = ({
 </Button>
 );
 
-const Welcome = ({ isAuthenticated, user, authButtonMethod }: WelcomeProps) => (
+export default ({ isAuthenticated, user, authButtonMethod }: WelcomeProps) => (
   <Jumbotron>
     <h1>Student attendance management system</h1>
     <p className="lead">This app is for lecturers, students</p>
@@ -41,5 +41,3 @@ const Welcome = ({ isAuthenticated, user, authButtonMethod }: WelcomeProps) => (
     />
   </Jumbotron>
 );
-
-export default Welcome;
