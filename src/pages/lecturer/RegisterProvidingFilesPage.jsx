@@ -98,10 +98,7 @@ export default ({ getAccessToken }) => {
         <FormWrapper>
           {courseOptions
           && (
-          <SelectInput onChange={(event) => {
-            setCourseId(event.target.value); console.log(event.target.value);
-          }}
-          >
+          <SelectInput onChange={(event) => setCourseId(event.target.value)}>
             {courseOptions.map((it) => <option key={it.id} value={it.id}>{it.name}</option>)}
           </SelectInput>
           )}
