@@ -1,12 +1,12 @@
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable no-use-before-define */
-import { Typography } from '@material-ui/core';
 import React from 'react';
+import { Jumbotron } from 'reactstrap';
 
 export default () => (
   <div>
-    <Typography paragraph>
+    <Jumbotron paragraph>
       TrainingRepresentativeMainPage side
-    </Typography>
+    </Jumbotron>
   </div>
 );

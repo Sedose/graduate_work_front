@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable react/prefer-stateless-function */
@@ -21,9 +22,9 @@ import Copyright from './component/Copyright';
 import RegisterProvidingFilesPage from './pages/lecturer/RegisterProvidingFilesPage';
 
 const PageDiv = styled.div`
-  oferflow: hidden;
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 const Footer = styled.footer`
@@ -32,7 +33,7 @@ const Footer = styled.footer`
 
 const App = ({
   error, isAuthenticated, login, logout, appLogin, user, getAccessToken,
-}: any) => (
+}) => (
   <Router>
     <PageDiv>
       <NavBar
@@ -43,7 +44,7 @@ const App = ({
         user={user}
       />
       <Container>
-        {error && (
+        {(error.message || error.debug) > 0 && (
         <ErrorMessage
           message={error.message}
           debug={error.debug}

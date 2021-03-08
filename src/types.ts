@@ -19,3 +19,9 @@ export interface UserCoordinates {
   latitude: number,
   longitude: number,
 }
+
+export interface CoursesResponse {
+  courses: {
+    name: string,
+  }[],
+}

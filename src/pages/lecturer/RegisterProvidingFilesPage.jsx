@@ -5,32 +5,50 @@
 /* eslint-disable import/no-unresolved */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable no-use-before-define */
-import React, { useState } from 'react';
-import { Button, ButtonGroup, Jumbotron } from 'reactstrap';
+import React, { useEffect, useState } from 'react';
+import {
+  Button, ButtonGroup, Form, Jumbotron,
+} from 'reactstrap';
 import styled from 'styled-components';
 import readXlsxFile from 'read-excel-file';
 import Papa from 'papaparse';
 import constants from '../../constants';
 import csvToJsonUtil from '../../application/csvToJsonUtil';
 import backendApi from '../../api/backend-api';
+import { CoursesResponse } from '../../types';
 
-const ButtonGroupWrapper = styled.div`
+const FormWrapper = styled.div`
   margin: 12px 0px 0px;
 `;
 
-// interface CsvRow {
-//   fullName: string,
-//   userAction: string,
-//   timestamp: Date,
-// }
+const SelectInput = styled.select`
+`;
 
 export default ({ getAccessToken }) => {
-  const [selectedFile, setSelectedFile] = useState({ file: undefined, fileExtension: undefined });
+  const [selectedFile, setSelectedFile] = useState({
+    file: '',
+    fileExtension: '',
+  });
+
+  const [courseOptions, setCourseOptions] = useState();
+  const [courseId, setCourseId] = useState();
+
+  const setCourseOptionsFromBackend = async () => {
+    const accessToken = await getAccessToken();
+    const courses = await backendApi.fetchCourses(accessToken);
+    setCourseOptions(courses.courses);
+    setCourseId(courses[0] && courses[0].id);
+  };
+
+  useEffect(() => {
+    if (!courseOptions) {
+      setCourseOptionsFromBackend();
+    }
+  });
 
   const changeHandler = (event) => {
     const file = event.target.files[0];
     setSelectedFile({ file, fileExtension: file.name.split('.').pop() });
-    console.log({ file, fileExtension: file.name.split('.').pop() });
   };
 
   const schema = {
@@ -55,18 +73,18 @@ export default ({ getAccessToken }) => {
     const accessToken = await getAccessToken();
     if (selectedFile.fileExtension === 'csv') {
       Papa.parse(selectedFile.file, {
-        complete(results) {
+        async complete(results) {
           const sliced = results.data.slice(1);
           backendApi.saveStudentsAttendanceFile(
             { attendances: csvToJsonUtil(sliced) },
           )(accessToken);
-          console.log('csvToJsonUtil: ', csvToJsonUtil(sliced));
         },
       });
     } else if (selectedFile.fileExtension === 'xlsx') {
-      readXlsxFile(selectedFile.file, { schema }).then(({ rows, errors }) => {
-        console.log('rows: ', rows);
-        backendApi.saveStudentsAttendanceFile({ attendances: rows })(accessToken);
+      readXlsxFile(selectedFile.file, { schema }).then(async ({ rows, errors }) => {
+        backendApi.saveStudentsAttendanceFile({
+          attendances: rows,
+        })(accessToken);
       });
     } else {
       console.log('toast error fucking!!!');
@@ -77,12 +95,19 @@ export default ({ getAccessToken }) => {
     <div>
       <Jumbotron>
         <div>Register student providing files from Teams</div>
-        <ButtonGroupWrapper>
-          <ButtonGroup>
-            <input type="file" onChange={changeHandler} required />
-            <Button color="primary" onClick={() => handleSubmission()}>Upload student attendance file</Button>
-          </ButtonGroup>
-        </ButtonGroupWrapper>
+        <FormWrapper>
+          {courseOptions
+          && (
+          <SelectInput onChange={(event) => {
+            setCourseId(event.target.value); console.log(event.target.value);
+          }}
+          >
+            {courseOptions.map((it) => <option key={it.id} value={it.id}>{it.name}</option>)}
+          </SelectInput>
+          )}
+          <input type="file" onChange={changeHandler} required />
+          <Button color="primary" onClick={() => handleSubmission()}>Upload student attendance file</Button>
+        </FormWrapper>
       </Jumbotron>
     </div>
   );

@@ -2,7 +2,7 @@
 /* eslint-disable import/no-unresolved */
 
 import constants from '../constants';
-import { UserDetailsResponse, UserCoordinates } from '../types';
+import { UserDetailsResponse, UserCoordinates, CoursesResponse } from '../types';
 
 const extractData = <T>(promise: Promise<Response>): Promise<T> => promise.then((response) => {
   if (!response.ok) {
@@ -34,21 +34,29 @@ const saveCoordinates = (
 
 const saveStudentsAttendanceFile = (
   jsonToSend : any,
-) => async (accessToken: string) => {
-  console.log('api: ', jsonToSend);
-  return fetch(`${constants.DEFAULT_BACKEND_API_PATH}/attendance-register-file`, {
-    method: 'POST',
+) => async (accessToken: string) => fetch(`${constants.DEFAULT_BACKEND_API_PATH}/attendance-register-file`, {
+  method: 'POST',
+  headers: {
+    Authorization: accessToken,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(jsonToSend),
+});
+
+const fetchCourses = (
+  accessToken: string,
+): Promise<CoursesResponse> => extractData<CoursesResponse>(fetch(
+  `${constants.DEFAULT_BACKEND_API_PATH}/courses`, {
     headers: {
       Authorization: accessToken,
-      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(jsonToSend),
-  });
-};
+  },
+));
 
 export default {
   retrieveUserDetails,
   saveCoordinates,
   extractData,
   saveStudentsAttendanceFile,
+  fetchCourses,
 };

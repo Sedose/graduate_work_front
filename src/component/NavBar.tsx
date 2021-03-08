@@ -141,7 +141,7 @@ export default ({
                 isAuthenticated={isAuthenticated}
                 login={login}
                 logout={logout}
-                appLogin={appLogin}
+                appLogin={() => { appLogin(); setOpen(false); }}
                 user={user}
               />
             </Nav>
