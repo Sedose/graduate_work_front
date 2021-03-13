@@ -7,21 +7,24 @@
 /* eslint-disable no-use-before-define */
 import React, { useEffect, useState } from 'react';
 import {
-  Button, ButtonGroup, Form, Jumbotron,
+  Button, Jumbotron, Toast, ToastHeader, ToastBody, Form, Label, FormGroup,
 } from 'reactstrap';
 import styled from 'styled-components';
 import readXlsxFile from 'read-excel-file';
 import Papa from 'papaparse';
-import constants from '../../constants';
 import csvToJsonUtil from '../../application/csvToJsonUtil';
 import backendApi from '../../api/backend-api';
-import { CoursesResponse } from '../../types';
 
 const FormWrapper = styled.div`
   margin: 12px 0px 0px;
 `;
 
 const SelectInput = styled.select`
+  margin: 12px;
+`;
+
+const FileInputWrapper = styled.div`
+  margin: 12px;
 `;
 
 export default ({ getAccessToken }) => {
@@ -31,7 +34,9 @@ export default ({ getAccessToken }) => {
   });
 
   const [courseOptions, setCourseOptions] = useState();
-  const [courseId, setCourseId] = useState();
+  const [courseId, setCourseId] = useState(1);
+  const [errorOnSavingFile, setErrorOnSavingFile] = useState(false);
+  const [successOnSavingFile, setSuccessOnSavingFile] = useState(false);
 
   const setCourseOptionsFromBackend = async () => {
     const accessToken = await getAccessToken();
@@ -44,11 +49,15 @@ export default ({ getAccessToken }) => {
     if (!courseOptions) {
       setCourseOptionsFromBackend();
     }
+    setTimeout(() => {
+      setErrorOnSavingFile(false);
+      setSuccessOnSavingFile(false);
+    }, 6000);
   });
 
   const changeHandler = (event) => {
     const file = event.target.files[0];
-    setSelectedFile({ file, fileExtension: file.name.split('.').pop() });
+    setSelectedFile({ file, fileExtension: file?.name.split('.').pop() ?? '' });
   };
 
   const schema = {
@@ -70,40 +79,75 @@ export default ({ getAccessToken }) => {
   };
 
   const handleSubmission = async () => {
-    const accessToken = await getAccessToken();
     if (selectedFile.fileExtension === 'csv') {
       Papa.parse(selectedFile.file, {
         async complete(results) {
-          const sliced = results.data.slice(1);
-          backendApi.saveStudentsAttendanceFile(
-            { attendances: csvToJsonUtil(sliced) },
-          )(accessToken);
+          saveStudentsAttendanceFile(csvToJsonUtil(results.data.slice(1)));
         },
       });
     } else if (selectedFile.fileExtension === 'xlsx') {
       readXlsxFile(selectedFile.file, { schema }).then(async ({ rows, errors }) => {
-        backendApi.saveStudentsAttendanceFile({
-          attendances: rows,
-        })(accessToken);
+        saveStudentsAttendanceFile(rows);
       });
-    } else {
-      console.log('toast error fucking!!!');
     }
   };
 
+  async function saveStudentsAttendanceFile(rows) {
+    const accessToken = await getAccessToken();
+    return backendApi.saveStudentsAttendanceFile({
+      attendances: rows,
+      courseId,
+      registeredTimestamp: Date.now(),
+    })(accessToken).then((response) => {
+      if (response.ok) {
+        setSuccessOnSavingFile(true);
+        setErrorOnSavingFile(false);
+      } else {
+        setErrorOnSavingFile(true);
+      }
+    }).catch(() => setErrorOnSavingFile(true));
+  }
+
   return (
     <div>
+      {(errorOnSavingFile || successOnSavingFile)
+          && (
+          <div className={`p-3 my-2 rounded ${(errorOnSavingFile && 'bg-danger') || (successOnSavingFile && 'bg-success')}`}>
+            <Toast>
+              <ToastHeader>
+                {errorOnSavingFile && 'Error'}
+                {successOnSavingFile && 'Ok'}
+              </ToastHeader>
+              <ToastBody>
+                {errorOnSavingFile && `Error on saving student attendance.
+                Try to amend file and try again. Maybe, there is no such student!`}
+                {successOnSavingFile && 'Successfully completed operation!'}
+              </ToastBody>
+            </Toast>
+          </div>
+          )}
       <Jumbotron>
         <div>Register student providing files from Teams</div>
         <FormWrapper>
-          {courseOptions
+          <Form>
+            {courseOptions
           && (
-          <SelectInput onChange={(event) => setCourseId(event.target.value)}>
-            {courseOptions.map((it) => <option key={it.id} value={it.id}>{it.name}</option>)}
-          </SelectInput>
+            <FormGroup>
+              <Label for="course">Select course</Label>
+              <SelectInput name="course" onChange={(event) => setCourseId(event.target.value)}>
+                <option value={1}>Please, select some option</option>
+                {courseOptions.map((it) => <option key={it.id} value={it.id}>{it.name}</option>)}
+              </SelectInput>
+            </FormGroup>
           )}
-          <input type="file" onChange={changeHandler} required />
-          <Button color="primary" onClick={() => handleSubmission()}>Upload student attendance file</Button>
+            <FormGroup>
+              <Label for="fileInput">Select attendance file</Label>
+              <FileInputWrapper>
+                <input name="fileInput" type="file" onChange={changeHandler} required accept=".xls,.xlsx,.csv" />
+              </FileInputWrapper>
+            </FormGroup>
+            <Button color="primary" onClick={() => handleSubmission()}>Upload student attendance file</Button>
+          </Form>
         </FormWrapper>
       </Jumbotron>
     </div>
