@@ -1,9 +1,3 @@
-/* eslint-disable react/jsx-one-expression-per-line */
-/* eslint-disable react/jsx-filename-extension */
-/* eslint-disable no-use-before-define */
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
-
 import React from 'react';
 import { Button, Jumbotron } from 'reactstrap';
 

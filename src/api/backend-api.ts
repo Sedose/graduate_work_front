@@ -1,6 +1,3 @@
-/* eslint-disable import/extensions */
-/* eslint-disable import/no-unresolved */
-
 import constants from '../constants';
 import { UserDetailsResponse, UserCoordinates, CoursesResponse } from '../types';
 

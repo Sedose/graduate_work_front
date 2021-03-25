@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-filename-extension */
-/* eslint-disable no-use-before-define */
 import React, { useState } from 'react';
 import { Redirect } from 'react-router';
 import { Button, ButtonGroup, Jumbotron } from 'reactstrap';

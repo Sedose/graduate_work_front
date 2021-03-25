@@ -1,10 +1,3 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable dot-notation */
-/* eslint-disable no-unused-vars */
-/* eslint-disable import/extensions */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable react/jsx-filename-extension */
-/* eslint-disable no-use-before-define */
 import React, { useEffect, useState } from 'react';
 import {
   Button, Jumbotron, Toast, ToastHeader, ToastBody, Form, Label, FormGroup,
@@ -27,21 +20,25 @@ const FileInputWrapper = styled.div`
   margin: 12px;
 `;
 
-export default ({ getAccessToken }) => {
+interface Props {
+  getAccessToken: Function;
+}
+
+export default ({ getAccessToken }: Props) => {
   const [selectedFile, setSelectedFile] = useState({
     file: '',
     fileExtension: '',
   });
 
-  const [courseOptions, setCourseOptions] = useState();
-  const [courseId, setCourseId] = useState(1);
+  const [courseOptions, setCourseOptions] = useState<Courses>();
+  const [courseId, setCourseId] = useState('1');
   const [errorOnSavingFile, setErrorOnSavingFile] = useState(false);
   const [successOnSavingFile, setSuccessOnSavingFile] = useState(false);
 
   const setCourseOptionsFromBackend = async () => {
     const accessToken = await getAccessToken();
     const courses = await backendApi.fetchCourses(accessToken);
-    setCourseOptions(courses.courses);
+    setCourseOptions(courses);
     setCourseId(courses[0] && courses[0].id);
   };
 
@@ -86,7 +83,7 @@ export default ({ getAccessToken }) => {
         },
       });
     } else if (selectedFile.fileExtension === 'xlsx') {
-      readXlsxFile(selectedFile.file, { schema }).then(async ({ rows, errors }) => {
+      readXlsxFile(selectedFile.file, { schema }).then(async ({ rows }) => {
         saveStudentsAttendanceFile(rows);
       });
     }
@@ -136,7 +133,9 @@ export default ({ getAccessToken }) => {
               <Label for="course">Select course</Label>
               <SelectInput name="course" onChange={(event) => setCourseId(event.target.value)}>
                 <option value={1}>Please, select some option</option>
-                {courseOptions.map((it) => <option key={it.id} value={it.id}>{it.name}</option>)}
+                {courseOptions.courses.map(
+                  ({ id, name }) => <option key={id} value={id}>{name}</option>,
+                )}
               </SelectInput>
             </FormGroup>
           )}
@@ -153,3 +152,10 @@ export default ({ getAccessToken }) => {
     </div>
   );
 };
+
+interface Courses {
+  courses: {
+    id: string;
+    name: string,
+  }[],
+}

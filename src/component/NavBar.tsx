@@ -1,6 +1,3 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable react/jsx-filename-extension */
-// eslint-disable-next-line no-use-before-define
 import React, { useEffect, useState } from 'react';
 import { NavLink as RouterNavLink, Redirect } from 'react-router-dom';
 import {

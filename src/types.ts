@@ -22,6 +22,7 @@ export interface UserCoordinates {
 
 export interface CoursesResponse {
   courses: {
+    id: string,
     name: string,
   }[],
 }

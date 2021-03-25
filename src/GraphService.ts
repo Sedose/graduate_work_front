@@ -1,9 +1,3 @@
-/* eslint-disable no-return-await */
-/* eslint-disable max-len */
-/* eslint-disable import/newline-after-import */
-/* eslint-disable import/no-unresolved */
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
 import moment, { Moment } from 'moment';
 import { Event } from 'microsoft-graph';
 import { PageCollection, PageIterator } from '@microsoft/microsoft-graph-client';

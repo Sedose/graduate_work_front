@@ -1,13 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable class-methods-use-this */
-/* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable react/jsx-filename-extension */
-/* eslint-disable max-len */
-/* eslint-disable import/extensions */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable no-use-before-define */
-// Copyright (c) Microsoft Corporation.
-// Licensed under the MIT License.
 import React, { useEffect, useState } from 'react';
 import { PublicClientApplication } from '@azure/msal-browser';
 

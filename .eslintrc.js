@@ -22,5 +22,7 @@ module.exports = {
   rules: {
     'no-var': 'error',
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
+    'import/extensions': 'off',
+    'import/resolver': 'webpack'
   },
 };
