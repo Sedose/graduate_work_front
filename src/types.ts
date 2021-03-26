@@ -3,7 +3,7 @@ export interface Credentials {
   password: string,
 }
 
-export type UserRole = 'STUDENT' | 'LECTURER' | 'TRAINING_REPRESENTATIVE' | '';
+export type UserRole = 'STUDENT' | 'LECTURER' | 'TRAINING_REPRESENTATIVE';
 
 export interface LoginResponse {
   accessToken: string,

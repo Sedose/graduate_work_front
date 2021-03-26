@@ -16,6 +16,7 @@ import {
   DropdownItem,
 } from 'reactstrap';
 import '@fortawesome/fontawesome-free/css/all.css';
+import { UserRole } from '../types';
 
 interface NavBarProps {
   isAuthenticated: boolean;
@@ -53,14 +54,13 @@ const AuthNavItem = ({
   const [mainPageLink, setMainPageLink] = useState('');
 
   useEffect(() => {
+    const paths: Record<UserRole, string> = {
+      STUDENT: '/student-main-page',
+      LECTURER: '/lecturer-main-page',
+      TRAINING_REPRESENTATIVE: '/training-representative-main-page',
+    };
     const { appRole } = user;
-    const selectedPageLink = appRole === 'STUDENT'
-      ? 'student-main-page'
-      : appRole === 'LECTURER'
-        ? 'lecturer-main-page'
-        : appRole === 'TRAINING_REPRESENTATIVE'
-          ? 'training-representative-main-page'
-          : '/';
+    const selectedPageLink = paths[appRole] ?? '/';
     setMainPageLink(selectedPageLink);
   });
 

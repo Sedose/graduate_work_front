@@ -6,6 +6,9 @@ module.exports = {
   extends: [
     'plugin:react/recommended',
     'airbnb',
+    'plugin:import/errors',
+    'plugin:import/warnings',
+    'plugin:import/typescript',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -21,8 +24,12 @@ module.exports = {
   ],
   rules: {
     'no-var': 'error',
-    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
+    'react/jsx-filename-extension': [0, { extensions: ['.js', '.jsx'] }],
     'import/extensions': 'off',
-    'import/resolver': 'webpack'
+    'no-use-before-define': 'off',
+    'react/jsx-props-no-spreading': 'off',
+    'react/jsx-one-expression-per-line': 'off',
+    'import/no-unresolved': 'off',
+    'import/prefer-default-export': 'off',
   },
 };

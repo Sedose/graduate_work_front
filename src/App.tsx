@@ -23,9 +23,19 @@ const Footer = styled.footer`
   margin-bottom: auto;
 `;
 
+interface Props {
+  error: any,
+  isAuthenticated: boolean,
+  login: Function,
+  logout: Function,
+  appLogin: Function,
+  user: any,
+  getAccessToken: Function
+}
+
 const App = ({
   error, isAuthenticated, login, logout, appLogin, user, getAccessToken,
-}) => (
+}: Props) => (
   <Router>
     <PageDiv>
       <NavBar
