@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { PublicClientApplication } from '@azure/msal-browser';
 
-import config from '../Config';
-import { getUserDetails } from '../GraphService';
+import config from '../Confing';
+import { getUserDetails } from '../application/GraphService';
 import backendApi from '../api/backend-api';
 
 export default (WrappedComponent) => () => {

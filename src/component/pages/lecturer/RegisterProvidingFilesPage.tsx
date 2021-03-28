@@ -5,8 +5,8 @@ import {
 import styled from 'styled-components';
 import readXlsxFile from 'read-excel-file';
 import Papa from 'papaparse';
-import csvToJsonUtil from '../../application/csvToJsonUtil';
-import backendApi from '../../api/backend-api';
+import csvToJsonUtil from '../../../application/csvToJsonUtil';
+import backendApi from '../../../api/backend-api';
 
 const FormWrapper = styled.div`
   margin: 12px 0px 0px;

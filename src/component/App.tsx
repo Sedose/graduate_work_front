@@ -2,15 +2,15 @@ import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Container } from 'reactstrap';
 import styled from 'styled-components';
-import withAuthProvider from './component/AuthProvider';
-import NavBar from './component/NavBar';
-import ErrorMessage from './component/ErrorMessage';
+import withAuthProvider from './AuthProvider';
+import NavBar from './NavBar';
+import ErrorMessage from './ErrorMessage';
 import Welcome from './pages/Welcome';
 import 'bootstrap/dist/css/bootstrap.css';
 import StudentMainPage from './pages/student/StudentMainPage';
 import LecturerMainPage from './pages/lecturer/LecturerMainPage';
 import TrainingRepresentativeMainPage from './pages/training-representative/TrainingRepresentativeMainPage';
-import Copyright from './component/Copyright';
+import Copyright from './Copyright';
 import RegisterProvidingFilesPage from './pages/lecturer/RegisterProvidingFilesPage';
 
 const PageDiv = styled.div`
