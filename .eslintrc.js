@@ -31,5 +31,6 @@ module.exports = {
     'react/jsx-one-expression-per-line': 'off',
     'import/no-unresolved': 'off',
     'import/prefer-default-export': 'off',
+    'no-trailing-spaces': 'off',
   },
 };
