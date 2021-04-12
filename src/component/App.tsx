@@ -33,6 +33,9 @@ interface Props {
   getAccessToken: Function
 }
 
+const FlexContainer = styled(Container)`
+`;
+
 const App = ({
   error, isAuthenticated, login, logout, appLogin, user, getAccessToken,
 }: Props) => (
@@ -45,7 +48,7 @@ const App = ({
         appLogin={appLogin}
         user={user}
       />
-      <Container>
+      <FlexContainer>
         {(error.message || error.debug) > 0 && (
         <ErrorMessage
           message={error.message}
@@ -92,7 +95,7 @@ const App = ({
             <RegisterProvidingFilesPage getAccessToken={getAccessToken} />
           )}
         />
-      </Container>
+      </FlexContainer>
       <Footer>
         <Copyright />
       </Footer>

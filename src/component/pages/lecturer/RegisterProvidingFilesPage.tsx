@@ -2,52 +2,11 @@ import React, { useEffect, useState } from 'react';
 import {
   Button, Jumbotron, Form, Label, FormGroup,
 } from 'reactstrap';
-import styled from 'styled-components';
 import readXlsxFile from 'read-excel-file';
 import Papa from 'papaparse';
 import csvToJsonUtil from '../../../application/csvToJsonUtil';
 import backendApi from '../../../api/backend-api';
-
-interface Props {
-  getAccessToken: Function;
-}
-
-interface Courses {
-  courses: {
-    id: string;
-    name: string,
-  }[],
-}
-
-const FormWrapper = styled.div`
-  margin: 12px 0px 0px;
-`;
-
-const SelectInput = styled.select`
-  margin: 12px;
-`;
-
-const FileInputWrapper = styled.div`
-  margin: 12px;
-`;
-
-const schema = {
-  'Полное имя': {
-    prop: 'fullName',
-    type: String,
-    required: true,
-  },
-  'Действие пользователя': {
-    prop: 'userAction',
-    type: String,
-    required: true,
-  },
-  'Метка времени': {
-    prop: 'timestamp',
-    type: String,
-    required: true,
-  },
-};
+import { FileInputWrapper, FormWrapper, SelectInput } from '../../../styles/styles';
 
 export default ({ getAccessToken }: Props) => {
   const [selectedFile, setSelectedFile] = useState({
@@ -58,7 +17,8 @@ export default ({ getAccessToken }: Props) => {
   const [courseOptions, setCourseOptions] = useState<Courses>();
   const [courseId, setCourseId] = useState('1');
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
+  const [frontendError, setFrontendError] = useState(false);
+  const [backendError, setBackendError] = useState(false);
 
   useEffect(() => {
     if (!courseOptions) {
@@ -68,17 +28,16 @@ export default ({ getAccessToken }: Props) => {
 
   useEffect(() => {
     setTimeout(resetStatePartially, 5000);
-  }, [success, error]);
+  }, [success, frontendError, backendError]);
 
   return (
     <>
-      {(success || error) && (
-        <>
-          <div>
-            {success && 'Successfully performed operation'}
-            {error && 'Error on perform operation'}
-          </div>
-        </>
+      {(success || frontendError || backendError) && (
+        <div className={`alert ${(frontendError || backendError) && 'alert-danger'} ${success && 'alert-success'}`} role="alert">
+          {success && 'Successfully performed operation'}
+          {frontendError && 'Error on perform operation. Invalid form input'}
+          {backendError && 'Error on perform operation. Server side error'}
+        </div>
       )}
       <div>
         <Jumbotron>
@@ -123,10 +82,17 @@ export default ({ getAccessToken }: Props) => {
   }
 
   function handleSubmission() {
-    ({
-      csv: saveCsv,
-      xlsx: saveXlsx,
-    }[selectedFile.fileExtension] || (() => setError(true)))();
+    console.log('courseId: ', courseId);
+    if (isFormInvalid()) {
+      console.log('form invalid');
+      setFrontendError(true);
+    } else {
+      console.log('form valid');
+      ({
+        csv: saveCsv,
+        xlsx: saveXlsx,
+      }[selectedFile.fileExtension] || (() => setBackendError(true)))();
+    }
   }
 
   function saveCsv() {
@@ -154,9 +120,9 @@ export default ({ getAccessToken }: Props) => {
         console.log('Here!');
         setSuccess(true);
       } else {
-        setError(true);
+        setBackendError(true);
       }
-    }).catch(() => setError(true));
+    }).catch(() => setBackendError(true));
   }
 
   async function setCourseOptionsFromBackend() {
@@ -168,6 +134,58 @@ export default ({ getAccessToken }: Props) => {
 
   function resetStatePartially() {
     setSuccess(false);
-    setError(false);
+    setBackendError(false);
+    setFrontendError(false);
+  }
+
+  function isFormInvalid() {
+    return isInvalidCourseId()
+      || isFileUnselected();
+  }
+
+  function isInvalidCourseId() {
+    return [
+      undefined,
+      null,
+      '-1',
+    ].includes(courseId);
+  }
+
+  function isFileUnselected() {
+    console.log('selectedFile: ', selectedFile);
+    return selectedFile == null
+      || selectedFile.fileExtension === ''
+      || selectedFile.file === '';
   }
 };
+
+function schema() {
+  return {
+    'Полное имя': {
+      prop: 'fullName',
+      type: String,
+      required: true,
+    },
+    'Действие пользователя': {
+      prop: 'userAction',
+      type: String,
+      required: true,
+    },
+    'Метка времени': {
+      prop: 'timestamp',
+      type: String,
+      required: true,
+    },
+  };
+}
+
+interface Props {
+  getAccessToken: Function;
+}
+
+interface Courses {
+  courses: {
+    id: string;
+    name: string,
+  }[],
+}
