@@ -81,9 +81,13 @@ export default (WrappedComponent) => () => {
 
   const appLogin = async () => {
     const accessToken = await getAccessToken(config.scopes);
-    const appUserDetails = await backendApi.retrieveUserDetails(accessToken);
-    setUser((prevState) => ({ ...prevState, appRole: appUserDetails.userRole }));
-    setError({ message: null, debug: null });
+    try {
+      const appUserDetails = await backendApi.retrieveUserDetails(accessToken);
+      setUser((prevState) => ({ ...prevState, appRole: appUserDetails.userRole }));
+      setError({ message: null, debug: null });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const login = async () => {

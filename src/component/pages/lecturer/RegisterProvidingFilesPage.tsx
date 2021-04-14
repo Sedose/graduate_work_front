@@ -7,6 +7,7 @@ import Papa from 'papaparse';
 import csvToJsonUtil from '../../../application/csvToJsonUtil';
 import backendApi from '../../../api/backend-api';
 import { FileInputWrapper, FormWrapper, SelectInput } from '../../../styles/styles';
+import schema from './schema';
 
 export default ({ getAccessToken }: Props) => {
   const [selectedFile, setSelectedFile] = useState({
@@ -36,7 +37,7 @@ export default ({ getAccessToken }: Props) => {
         <div className={`alert ${(frontendError || backendError) && 'alert-danger'} ${success && 'alert-success'}`} role="alert">
           {success && 'Successfully performed operation'}
           {frontendError && 'Error on perform operation. Invalid form input'}
-          {backendError && 'Error on perform operation. Server side error'}
+          {backendError && 'Error on perform operation. Server side error.'}
         </div>
       )}
       <div>
@@ -48,7 +49,15 @@ export default ({ getAccessToken }: Props) => {
               && (
                 <FormGroup>
                   <Label for="course">Select course</Label>
-                  <SelectInput name="course" onChange={(event) => setCourseId(event.target.value)}>
+                  <SelectInput
+                    name="course"
+                    onChange={
+                    (event) => {
+                      setCourseId(event.target.value);
+                      setTimeout(() => console.log('course: ', courseId), 0);
+                    }
+                  }
+                  >
                     <option value={-1}>Please, select some option</option>
                     {courseOptions.courses.map(
                       ({ id, name }) => <option key={id} value={id}>{name}</option>,
@@ -91,7 +100,7 @@ export default ({ getAccessToken }: Props) => {
       ({
         csv: saveCsv,
         xlsx: saveXlsx,
-      }[selectedFile.fileExtension] || (() => setBackendError(true)))();
+      }[selectedFile.fileExtension] || (() => setFrontendError(true)))();
     }
   }
 
@@ -115,14 +124,17 @@ export default ({ getAccessToken }: Props) => {
       attendances: rows,
       courseId,
       registeredTimestamp: Date.now(),
-    })(accessToken).then((response) => {
-      if (response.ok) {
-        console.log('Here!');
-        setSuccess(true);
-      } else {
+    })(accessToken).then((resp) => {
+      if (!resp.ok) {
+        setSuccess(false);
         setBackendError(true);
+        throw new Error(resp.statusText);
       }
-    }).catch(() => setBackendError(true));
+      setSuccess(true);
+      return resp.json();
+    }).catch(() => {
+      setBackendError(true);
+    });
   }
 
   async function setCourseOptionsFromBackend() {
@@ -158,26 +170,6 @@ export default ({ getAccessToken }: Props) => {
       || selectedFile.file === '';
   }
 };
-
-function schema() {
-  return {
-    'Полное имя': {
-      prop: 'fullName',
-      type: String,
-      required: true,
-    },
-    'Действие пользователя': {
-      prop: 'userAction',
-      type: String,
-      required: true,
-    },
-    'Метка времени': {
-      prop: 'timestamp',
-      type: String,
-      required: true,
-    },
-  };
-}
 
 interface Props {
   getAccessToken: Function;

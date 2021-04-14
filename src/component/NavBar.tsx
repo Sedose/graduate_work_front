@@ -102,9 +102,11 @@ export default ({
   const [mainPageLink, setMainPageLink] = useState('');
 
   useEffect(() => {
-    if (mainPageLink === '') {
-      fetchUserRoleAndSetMainPageLinkAsync();
-    }
+    setTimeout(() => {
+      if (mainPageLink === '') {
+        fetchUserRoleAndSetMainPageLinkAsync();
+      }
+    }, 333);
   });
 
   async function fetchUserRoleAndSetMainPageLinkAsync() {
