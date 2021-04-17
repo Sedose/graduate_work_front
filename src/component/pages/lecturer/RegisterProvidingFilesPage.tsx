@@ -4,10 +4,16 @@ import {
 } from 'reactstrap';
 import readXlsxFile from 'read-excel-file';
 import Papa from 'papaparse';
+import { ToastContainer, toast } from 'react-toastify';
 import csvToJsonUtil from '../../../application/csvToJsonUtil';
 import backendApi from '../../../api/backend-api';
 import { FileInputWrapper, FormWrapper, SelectInput } from '../../../styles/styles';
 import schema from './schema';
+import 'react-toastify/dist/ReactToastify.css';
+
+const saveAttendancesResponseStatusToMessageMap = {
+  404: 'Cannot find user with such first name, middle name, last name',
+};
 
 export default ({ getAccessToken }: Props) => {
   const [selectedFile, setSelectedFile] = useState({
@@ -17,29 +23,17 @@ export default ({ getAccessToken }: Props) => {
 
   const [courseOptions, setCourseOptions] = useState<Courses>();
   const [courseId, setCourseId] = useState('1');
-  const [success, setSuccess] = useState(false);
-  const [frontendError, setFrontendError] = useState(false);
-  const [backendError, setBackendError] = useState(false);
 
   useEffect(() => {
+    console.log('Here!!!');
     if (!courseOptions) {
       setCourseOptionsFromBackend();
     }
   });
 
-  useEffect(() => {
-    setTimeout(resetStatePartially, 5000);
-  }, [success, frontendError, backendError]);
-
   return (
     <>
-      {(success || frontendError || backendError) && (
-        <div className={`alert ${(frontendError || backendError) && 'alert-danger'} ${success && 'alert-success'}`} role="alert">
-          {success && 'Successfully performed operation'}
-          {frontendError && 'Error on perform operation. Invalid form input'}
-          {backendError && 'Error on perform operation. Server side error.'}
-        </div>
-      )}
+      <ToastContainer />
       <div>
         <Jumbotron>
           <div>Register student providing files from Teams</div>
@@ -52,10 +46,7 @@ export default ({ getAccessToken }: Props) => {
                   <SelectInput
                     name="course"
                     onChange={
-                    (event) => {
-                      setCourseId(event.target.value);
-                      setTimeout(() => console.log('course: ', courseId), 0);
-                    }
+                    (event) => setCourseId(event.target.value)
                   }
                   >
                     <option value={-1}>Please, select some option</option>
@@ -91,34 +82,31 @@ export default ({ getAccessToken }: Props) => {
   }
 
   function handleSubmission() {
-    console.log('courseId: ', courseId);
     if (isFormInvalid()) {
-      console.log('form invalid');
-      setFrontendError(true);
+      toast.error('Error on perform operation. Invalid form input. File, course should be selected!');
     } else {
-      console.log('form valid');
       ({
         csv: saveCsv,
         xlsx: saveXlsx,
-      }[selectedFile.fileExtension] || (() => setFrontendError(true)))();
+      }[selectedFile.fileExtension] || (() => toast.error('Error on perform operation. Invalid selected file extension!')))();
     }
   }
 
   function saveCsv() {
     Papa.parse(selectedFile.file, {
       async complete(results) {
-        await saveStudentsAttendanceFile(csvToJsonUtil(results.data.slice(1)));
+        await saveStudentsAttendancesFile(csvToJsonUtil(results.data.slice(1)));
       },
     });
   }
 
   function saveXlsx() {
     readXlsxFile(selectedFile.file, { schema }).then(async ({ rows }) => {
-      await saveStudentsAttendanceFile(rows);
+      await saveStudentsAttendancesFile(rows);
     });
   }
 
-  async function saveStudentsAttendanceFile(rows) {
+  async function saveStudentsAttendancesFile(rows) {
     const accessToken = await getAccessToken();
     return backendApi.saveStudentsAttendanceFile({
       attendances: rows,
@@ -126,14 +114,13 @@ export default ({ getAccessToken }: Props) => {
       registeredTimestamp: Date.now(),
     })(accessToken).then((resp) => {
       if (!resp.ok) {
-        setSuccess(false);
-        setBackendError(true);
-        throw new Error(resp.statusText);
+        toast.error('Server side error!');
+        throw new Error(resp.status.toString());
       }
-      setSuccess(true);
-      return resp.json();
-    }).catch(() => {
-      setBackendError(true);
+      toast('Successfully performed operation!');
+    }).catch((e) => {
+      const errorMessage = saveAttendancesResponseStatusToMessageMap[e.message] || '';
+      toast.error(`Server side error! ${errorMessage}`);
     });
   }
 
@@ -144,18 +131,13 @@ export default ({ getAccessToken }: Props) => {
     setCourseId(courses[0] && courses[0].id);
   }
 
-  function resetStatePartially() {
-    setSuccess(false);
-    setBackendError(false);
-    setFrontendError(false);
-  }
-
   function isFormInvalid() {
     return isInvalidCourseId()
       || isFileUnselected();
   }
 
   function isInvalidCourseId() {
+    console.log(`courseId: ${courseId}`);
     return [
       undefined,
       null,
@@ -164,7 +146,7 @@ export default ({ getAccessToken }: Props) => {
   }
 
   function isFileUnselected() {
-    console.log('selectedFile: ', selectedFile);
+    console.log(`selectedFile: ${selectedFile}`);
     return selectedFile == null
       || selectedFile.fileExtension === ''
       || selectedFile.file === '';
