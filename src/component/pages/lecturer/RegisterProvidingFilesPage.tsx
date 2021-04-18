@@ -12,6 +12,7 @@ import schema from './schema';
 import 'react-toastify/dist/ReactToastify.css';
 
 const saveAttendancesResponseStatusToMessageMap = {
+  400: 'Invalid file!',
   404: 'Cannot find user with such first name, middle name, last name',
 };
 
@@ -25,7 +26,6 @@ export default ({ getAccessToken }: Props) => {
   const [courseId, setCourseId] = useState('1');
 
   useEffect(() => {
-    console.log('Here!!!');
     if (!courseOptions) {
       setCourseOptionsFromBackend();
     }
@@ -114,7 +114,6 @@ export default ({ getAccessToken }: Props) => {
       registeredTimestamp: Date.now(),
     })(accessToken).then((resp) => {
       if (!resp.ok) {
-        toast.error('Server side error!');
         throw new Error(resp.status.toString());
       }
       toast('Successfully performed operation!');
@@ -137,7 +136,6 @@ export default ({ getAccessToken }: Props) => {
   }
 
   function isInvalidCourseId() {
-    console.log(`courseId: ${courseId}`);
     return [
       undefined,
       null,
@@ -146,7 +144,6 @@ export default ({ getAccessToken }: Props) => {
   }
 
   function isFileUnselected() {
-    console.log(`selectedFile: ${selectedFile}`);
     return selectedFile == null
       || selectedFile.fileExtension === ''
       || selectedFile.file === '';
