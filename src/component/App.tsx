@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Container } from 'reactstrap';
 import styled from 'styled-components';
+import { ToastContainer } from 'react-toastify';
 import withAuthProvider from './AuthProvider';
 import NavBar from './NavBar';
 import ErrorMessage from './ErrorMessage';
@@ -39,68 +40,71 @@ const FlexContainer = styled(Container)`
 const App = ({
   error, isAuthenticated, login, logout, appLogin, user, getAccessToken,
 }: Props) => (
-  <Router>
-    <PageDiv>
-      <NavBar
-        isAuthenticated={isAuthenticated}
-        login={login}
-        logout={logout}
-        appLogin={appLogin}
-        user={user}
-      />
-      <FlexContainer>
-        {(error.message || error.debug) > 0 && (
-        <ErrorMessage
-          message={error.message}
-          debug={error.debug}
+  <>
+    <ToastContainer />
+    <Router>
+      <PageDiv>
+        <NavBar
+          isAuthenticated={isAuthenticated}
+          login={login}
+          logout={logout}
+          appLogin={appLogin}
+          user={user}
         />
-        )}
-        <Route
-          exact
-          path="/"
-          render={(props) => (
-            <Welcome
-              {...props}
-              isAuthenticated={isAuthenticated}
-              user={user}
-              authButtonMethod={login}
-            />
+        <FlexContainer>
+          {(error.message || error.debug) > 0 && (
+          <ErrorMessage
+            message={error.message}
+            debug={error.debug}
+          />
           )}
-        />
-        <Route
-          exact
-          path="/student-main-page"
-          render={() => (
-            <StudentMainPage />
-          )}
-        />
-        <Route
-          exact
-          path="/lecturer-main-page"
-          render={() => (
-            <LecturerMainPage />
-          )}
-        />
-        <Route
-          exact
-          path="/training-representative-main-page"
-          render={() => (
-            <TrainingRepresentativeMainPage />
-          )}
-        />
-        <Route
-          exact
-          path="/register/providing-files"
-          render={() => (
-            <RegisterProvidingFilesPage getAccessToken={getAccessToken} />
-          )}
-        />
-      </FlexContainer>
-      <Footer>
-        <Copyright />
-      </Footer>
-    </PageDiv>
-  </Router>
+          <Route
+            exact
+            path="/"
+            render={(props) => (
+              <Welcome
+                {...props}
+                isAuthenticated={isAuthenticated}
+                user={user}
+                authButtonMethod={login}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/student-main-page"
+            render={() => (
+              <StudentMainPage />
+            )}
+          />
+          <Route
+            exact
+            path="/lecturer-main-page"
+            render={() => (
+              <LecturerMainPage />
+            )}
+          />
+          <Route
+            exact
+            path="/training-representative-main-page"
+            render={() => (
+              <TrainingRepresentativeMainPage />
+            )}
+          />
+          <Route
+            exact
+            path="/register/providing-files"
+            render={() => (
+              <RegisterProvidingFilesPage getAccessToken={getAccessToken} />
+            )}
+          />
+        </FlexContainer>
+        <Footer>
+          <Copyright />
+        </Footer>
+      </PageDiv>
+    </Router>
+  </>
 );
 
 export default withAuthProvider(App);

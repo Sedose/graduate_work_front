@@ -4,7 +4,7 @@ import {
 } from 'reactstrap';
 import readXlsxFile from 'read-excel-file';
 import Papa from 'papaparse';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import csvToJsonUtil from '../../../application/csvToJsonUtil';
 import backendApi from '../../../api/backend-api';
 import { FileInputWrapper, FormWrapper, SelectInput } from '../../../styles/styles';
@@ -33,7 +33,6 @@ export default ({ getAccessToken }: Props) => {
 
   return (
     <>
-      <ToastContainer />
       <div>
         <Jumbotron>
           <div>Register student providing files from Teams</div>

@@ -28,31 +28,12 @@ export default (WrappedComponent) => () => {
     }
   });
 
-  const getAccessToken = async (scopes) => {
-    try {
-      const accounts = publicClientApplication.getAllAccounts();
-      if (accounts.length <= 0) {
-        throw new Error('login_required');
-      }
-      const silentResult = await publicClientApplication.acquireTokenSilent(
-        {
-          scopes,
-          account: accounts[0],
-        },
-      );
-      return silentResult.accessToken;
-    } catch (err) {
-      if (isInteractionRequired(err)) {
-        const interactiveResult = await publicClientApplication.acquireTokenPopup(
-          {
-            scopes,
-          },
-        );
-        return interactiveResult.accessToken;
-      }
-      throw err;
-    }
-  };
+  const getAccessToken = (scopes) => Promise.resolve(
+    publicClientApplication.getAllAccounts(),
+  )
+    .then((accounts) => acquireTokenSilentOrFail(accounts, scopes, publicClientApplication))
+    .catch((err) => acquireTokenPopupOrFail(err, scopes, publicClientApplication))
+    .then(({ accessToken }) => accessToken);
 
   const getUserProfile = async () => {
     try {
@@ -124,19 +105,6 @@ export default (WrappedComponent) => () => {
     return normalizedError;
   };
 
-  const isInteractionRequired = (err) => {
-    if (!err.message || err.message.length <= 0) {
-      return false;
-    }
-
-    return (
-      err.message.indexOf('consent_required') > -1
-        || err.message.indexOf('interaction_required') > -1
-        || err.message.indexOf('login_required') > -1
-        || err.message.indexOf('no_account_in_silent_request') > -1
-    );
-  };
-
   return (
     <WrappedComponent
       error={error}
@@ -149,5 +117,30 @@ export default (WrappedComponent) => () => {
       setError={(message, debug) => setErrorMessage(message, debug)}
       {...WrappedComponent.props}
     />
+  );
+};
+
+function acquireTokenSilentOrFail(accounts, scopes, publicClientApplication) {
+  return accounts.length > 0
+    ? publicClientApplication.acquireTokenSilent({ scopes, account: accounts[0] })
+    : Promise.reject(new Error('login_required'));
+}
+
+function acquireTokenPopupOrFail(err, scopes, publicClientApplication) {
+  return (isInteractionRequired(err)
+    ? publicClientApplication.acquireTokenPopup({ scopes })
+    : Promise.reject(err));
+}
+
+const isInteractionRequired = (err) => {
+  if (!err.message || err.message.length <= 0) {
+    return false;
+  }
+
+  return (
+    err.message.includes('consent_required')
+    || err.message.includes('interaction_required')
+    || err.message.includes('login_required')
+    || err.message.includes('no_account_in_silent_request')
   );
 };
