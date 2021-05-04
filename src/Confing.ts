@@ -6,6 +6,9 @@ const config = {
     'mailboxsettings.read',
     'calendars.readwrite',
   ],
+  proxy: {
+    target: process.env.BACKEND_API_URL || 'http://localhost:8080',
+  },
 };
 
 export default config;
