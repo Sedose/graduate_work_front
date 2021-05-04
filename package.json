@@ -2,6 +2,7 @@
   "name": "graph-tutorial",
   "version": "0.1.0",
   "private": true,
+  "proxy": "https://visits-logs.herokuapp.com/",
   "dependencies": {
     "@azure/msal-browser": "^2.1.0",
     "@fortawesome/fontawesome-free": "^5.14.0",
