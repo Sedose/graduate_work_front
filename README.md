@@ -5,3 +5,7 @@ There are some problems to fix partially.
 1. Unused redux included.
 3. The code is not decomposed into levels, problems in the project structure.
 4. Miscellaneous messages in commits.
+
+Env variables are listed below:
+1. AUTH_REDIRECT_URI
+2. BACKEND_API_URL
