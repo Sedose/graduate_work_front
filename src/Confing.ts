@@ -8,6 +8,4 @@ const config = {
   ],
 };
 
-console.log('config.redirectUri: ', config.redirectUri);
-
 export default config;

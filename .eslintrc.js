@@ -32,5 +32,6 @@ module.exports = {
     'import/no-unresolved': 'off',
     'import/prefer-default-export': 'off',
     'no-trailing-spaces': 'off',
+    'no-console': 'off',
   },
 };
