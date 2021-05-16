@@ -102,17 +102,12 @@ export default ({
   const [mainPageLink, setMainPageLink] = useState('');
 
   useEffect(() => {
-    setTimeout(() => {
-      if (mainPageLink === '') {
-        fetchUserRoleAndSetMainPageLinkAsync();
-      }
-    }, 333);
-  });
+    fetchUserRoleAndSetMainPageLinkAsync();
+  }, []);
 
   async function fetchUserRoleAndSetMainPageLinkAsync() {
-    await appLogin();
-    const { appRole } = user;
-    setMainPageLink(paths[appRole]);
+    const userRole = await appLogin();
+    setMainPageLink(paths[userRole]);
   }
 
   return (
@@ -134,6 +129,13 @@ export default ({
                     Main page
                   </RouterNavLink>
                 </NavItem>
+              )}
+              {isAuthenticated && (
+              <NavItem>
+                <RouterNavLink to="/settings" className="nav-link" exact>
+                  Settings
+                </RouterNavLink>
+              </NavItem>
               )}
             </Nav>
             <Nav className="justify-content-end" navbar>

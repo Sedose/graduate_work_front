@@ -13,6 +13,7 @@ import LecturerMainPage from './pages/lecturer/LecturerMainPage';
 import TrainingRepresentativeMainPage from './pages/training-representative/TrainingRepresentativeMainPage';
 import Copyright from './Copyright';
 import RegisterProvidingFilesPage from './pages/lecturer/RegisterProvidingFilesPage';
+import Settings from './pages/Settings';
 
 const PageDiv = styled.div`
   display: flex;
@@ -96,6 +97,13 @@ const App = ({
             path="/register/providing-files"
             render={() => (
               <RegisterProvidingFilesPage getAccessToken={getAccessToken} />
+            )}
+          />
+          <Route
+            exact
+            path="/settings"
+            render={() => (
+              <Settings getAccessToken={getAccessToken} />
             )}
           />
         </FlexContainer>

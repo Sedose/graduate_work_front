@@ -1,22 +1,7 @@
 import constants from '../constants';
-import { UserDetailsResponse, UserCoordinates, CoursesResponse } from '../types';
-
-const extractData = <T>(promise: Promise<Response>): Promise<T> => promise.then((response) => {
-  if (!response.ok) {
-    throw new Error(response.statusText);
-  }
-  return response.json() as Promise<T>;
-});
-
-const retrieveUserDetails = (
-  accessToken: string,
-): Promise<UserDetailsResponse> => extractData<UserDetailsResponse>(fetch(
-  `${constants.DEFAULT_BACKEND_API_PATH}/user-details`, {
-    headers: {
-      Authorization: accessToken,
-    },
-  },
-));
+import {
+  UserDetailsResponse, UserCoordinates, CoursesResponse, UserSettingsResponse, 
+} from '../types';
 
 const saveCoordinates = (
   coordinates : UserCoordinates,
@@ -40,6 +25,16 @@ const saveStudentsAttendanceFile = (
   body: JSON.stringify(jsonToSend),
 });
 
+const retrieveUserDetails = (
+  accessToken: string,
+): Promise<UserDetailsResponse> => extractData<UserDetailsResponse>(fetch(
+  `${constants.DEFAULT_BACKEND_API_PATH}/user-details`, {
+    headers: {
+      Authorization: accessToken,
+    },
+  },
+));
+
 const fetchCourses = (
   accessToken: string,
 ): Promise<CoursesResponse> => extractData<CoursesResponse>(fetch(
@@ -50,10 +45,28 @@ const fetchCourses = (
   },
 ));
 
+const fetchSettings = (
+  accessToken: string,
+): Promise<UserSettingsResponse> => extractData<UserSettingsResponse>(fetch(
+  `${constants.DEFAULT_BACKEND_API_PATH}/user-settings`, {
+    headers: {
+      Authorization: accessToken,
+    },
+  },
+));
+
+const extractData = <T>(promise: Promise<Response>): Promise<T> => promise.then((response) => {
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+  return response.json() as Promise<T>;
+});
+
 export default {
   retrieveUserDetails,
   saveCoordinates,
   extractData,
   saveStudentsAttendanceFile,
   fetchCourses,
+  fetchSettings,
 };

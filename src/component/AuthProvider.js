@@ -26,7 +26,7 @@ export default (WrappedComponent) => () => {
     if (accounts?.length > 0 && !isAuthenticated) {
       getUserProfile();
     }
-  });
+  }, []);
 
   const getAccessToken = (scopes) => Promise.resolve(
     publicClientApplication.getAllAccounts(),
@@ -66,6 +66,7 @@ export default (WrappedComponent) => () => {
       const appUserDetails = await backendApi.retrieveUserDetails(accessToken);
       setUser((prevState) => ({ ...prevState, appRole: appUserDetails.userRole }));
       setError({ message: null, debug: null });
+      return user.appRole;
     } catch (err) {
       console.log(err);
     }

@@ -26,10 +26,8 @@ export default ({ getAccessToken }: Props) => {
   const [courseId, setCourseId] = useState('1');
 
   useEffect(() => {
-    if (!courseOptions) {
-      setCourseOptionsFromBackend();
-    }
-  });
+    setCourseOptionsFromBackend();
+  }, []);
 
   return (
     <>

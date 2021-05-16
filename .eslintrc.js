@@ -33,5 +33,7 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'no-trailing-spaces': 'off',
     'no-console': 'off',
+    'react/prop-types': 'off',
+    'consistent-return': 'off',
   },
 };

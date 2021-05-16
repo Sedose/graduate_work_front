@@ -26,3 +26,12 @@ export interface CoursesResponse {
     name: string,
   }[],
 }
+
+export interface UserSettingsResponse {
+  userSettings: {
+    code: string,
+    description: string,
+    value: string,
+    defaultValue: string,
+  }[],
+}
