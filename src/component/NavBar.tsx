@@ -21,12 +21,12 @@ interface NavBarProps {
   isAuthenticated: boolean;
   login: any;
   logout: any;
-  appLogin: any;
   user: {
     appRole: string;
     displayName: string;
     email: string;
   };
+  appLogin: Function;
 }
 
 const UserAvatar = ({ user }: any) => (user.avatar && (
@@ -53,12 +53,6 @@ interface AuthNavItemProps {
     email: string;
   };
 }
-
-const paths = {
-  STUDENT: '/student-main-page',
-  LECTURER: '/lecturer-main-page',
-  TRAINING_REPRESENTATIVE: '/training-representative-main-page',
-};
 
 const AuthNavItem = ({
   isAuthenticated,
@@ -99,15 +93,24 @@ export default ({
   appLogin,
 }: NavBarProps) => {
   const [isOpen, setOpen] = useState(false);
-  const [mainPageLink, setMainPageLink] = useState('');
+  const [link, setLink] = useState();
 
   useEffect(() => {
-    fetchUserRoleAndSetMainPageLinkAsync();
+    setMainPageLinkAsync();
   }, []);
 
-  async function fetchUserRoleAndSetMainPageLinkAsync() {
+  const handleGoToMainPage = async () => {
+    document.location.href = link;
+  };
+
+  async function setMainPageLinkAsync() {
     const userRole = await appLogin();
-    setMainPageLink(paths[userRole]);
+    console.log('userRole fuck this: ', userRole);
+    setLink({
+      STUDENT: '/student-main-page',
+      LECTURER: '/lecturer-main-page',
+      TRAINING_REPRESENTATIVE: '/training-representative-main-page',
+    }[userRole] || '/');
   }
 
   return (
@@ -123,13 +126,11 @@ export default ({
                   Home
                 </RouterNavLink>
               </NavItem>
-              {isAuthenticated && mainPageLink && (
-                <NavItem>
-                  <RouterNavLink to={mainPageLink} className="nav-link" exact>
-                    Main page
-                  </RouterNavLink>
-                </NavItem>
-              )}
+              <NavItem>
+                <RouterNavLink to="" className="nav-link" exact onClick={handleGoToMainPage}>
+                  Main page
+                </RouterNavLink>
+              </NavItem>
               {isAuthenticated && (
               <NavItem>
                 <RouterNavLink to="/settings" className="nav-link" exact>

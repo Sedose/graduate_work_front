@@ -66,7 +66,7 @@ export default (WrappedComponent) => () => {
       const appUserDetails = await backendApi.retrieveUserDetails(accessToken);
       setUser((prevState) => ({ ...prevState, appRole: appUserDetails.userRole }));
       setError({ message: null, debug: null });
-      return user.appRole;
+      return appUserDetails.userRole;
     } catch (err) {
       console.log(err);
     }
