@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Jumbotron, Table } from 'reactstrap';
+import {
+  Button, Container, Jumbotron, Table, 
+} from 'reactstrap';
 import backendApi from '../../api/backend-api';
 
 export default ({ getAccessToken }) => {
@@ -11,7 +13,6 @@ export default ({ getAccessToken }) => {
 
   const setSettingsAsync = async () => {
     const settingsFromBackend = await fetchSettingsFromBackend();
-    console.log('settingsFromBackend: ', settingsFromBackend);
     setSettings(settingsFromBackend);
   };
 
@@ -19,6 +20,18 @@ export default ({ getAccessToken }) => {
     const accessToken = await getAccessToken();
     return backendApi.fetchSettings(accessToken);
   }
+
+  const handleSaveAllSettings = async () => {
+    const userSettingsRequestBody = {
+      userSettings: settings.userSettings.map(({ code, value }) => ({
+        code,
+        newValue: value,
+      })), 
+    };
+    const accessToken = await getAccessToken();
+    console.log('accessToken: ', accessToken);
+    await backendApi.saveAllUserSettings(userSettingsRequestBody)(accessToken);
+  };
 
   return (
     <>
@@ -48,18 +61,22 @@ export default ({ getAccessToken }) => {
                   <td>{description}</td>
                   <td>{value}</td>
                   <td>{defaultValue}</td>
-                  <td><input onClick={(event) => setSettingValue(code, event.target.value)} /></td>
+                  <td><input onChange={(event) => setSettingValue(code, event.target.value)} /></td>
                 </tr>
               ),
             )}
           </tbody>
         </Table>
+        <Button onClick={() => handleSaveAllSettings()}>
+          Save all changes
+        </Button>
       </Container>
     </>
   );
 
   function setSettingValue(settingCode, value) {
     const selectedSetting = settings?.userSettings.find(({ code }) => code === settingCode);
+    console.log('selectedSetting: ', selectedSetting);
     if (selectedSetting) {
       selectedSetting.value = value;
     }

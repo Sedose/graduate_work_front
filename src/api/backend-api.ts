@@ -25,6 +25,17 @@ const saveStudentsAttendanceFile = (
   body: JSON.stringify(jsonToSend),
 });
 
+const saveAllUserSettings = (
+  jsonToSend : any,
+) => async (accessToken: string) => (fetch(`${constants.DEFAULT_BACKEND_API_PATH}/user-settings`, {
+  method: 'PUT',
+  headers: {
+    Authorization: accessToken,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(jsonToSend),
+}));
+
 const retrieveUserDetails = (
   accessToken: string,
 ): Promise<UserDetailsResponse> => extractData<UserDetailsResponse>(fetch(
@@ -69,4 +80,5 @@ export default {
   saveStudentsAttendanceFile,
   fetchCourses,
   fetchSettings,
+  saveAllUserSettings,
 };
