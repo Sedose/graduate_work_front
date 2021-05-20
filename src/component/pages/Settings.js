@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import {
   Button, Container, Jumbotron, Table, 
 } from 'reactstrap';
@@ -12,26 +13,12 @@ export default ({ getAccessToken }) => {
   }, []);
 
   const setSettingsAsync = async () => {
-    const settingsFromBackend = await fetchSettingsFromBackend();
-    setSettings(settingsFromBackend);
+    setSettings(await fetchSettingsFromBackend());
   };
 
   async function fetchSettingsFromBackend() {
-    const accessToken = await getAccessToken();
-    return backendApi.fetchSettings(accessToken);
+    return backendApi.fetchSettings(await getAccessToken());
   }
-
-  const handleSaveAllSettings = async () => {
-    const userSettingsRequestBody = {
-      userSettings: settings.userSettings.map(({ code, value }) => ({
-        code,
-        newValue: value,
-      })), 
-    };
-    const accessToken = await getAccessToken();
-    console.log('accessToken: ', accessToken);
-    await backendApi.saveAllUserSettings(userSettingsRequestBody)(accessToken);
-  };
 
   return (
     <>
@@ -61,24 +48,49 @@ export default ({ getAccessToken }) => {
                   <td>{description}</td>
                   <td>{value}</td>
                   <td>{defaultValue}</td>
-                  <td><input onChange={(event) => setSettingValue(code, event.target.value)} /></td>
+                  <td>
+                    <input
+                      type="number"
+                      min={-2147483648}
+                      max={2147483647}
+                      onChange={(event) => setSettingValue(code, event.target.value)}
+                    />
+                  </td>
                 </tr>
               ),
             )}
           </tbody>
         </Table>
-        <Button onClick={() => handleSaveAllSettings()}>
+        <Button onClick={() => handleSaveAllSettings(settings)(getAccessToken)}>
           Save all changes
         </Button>
       </Container>
     </>
   );
 
-  function setSettingValue(settingCode, value) {
-    const selectedSetting = settings?.userSettings.find(({ code }) => code === settingCode);
-    console.log('selectedSetting: ', selectedSetting);
-    if (selectedSetting) {
-      selectedSetting.value = value;
+  function setSettingValue(settingCode, settingValueNew) {
+    const parsedSettingValue = parseInt(settingValueNew, 10);
+    if (!isInteger(parsedSettingValue)) {
+      toast.error('Error on perform operation. Invalid form input. Enter integer!');
     }
+    const newSettings = settings?.userSettings.map((setting) => (
+      setting.code === settingCode ? { ...setting, value: settingValueNew } : setting
+    ));
+    setSettings(newSettings);
   }
+};
+
+const isInteger = (maybeInteger) => (
+  Number.isInteger(maybeInteger)
+    && maybeInteger > -2147483648 && maybeInteger < 2147483647
+);
+
+const handleSaveAllSettings = (settings) => async (getAccessToken) => {
+  const userSettingsRequestBody = {
+    userSettings: settings.userSettings.map(({ code, value }) => ({
+      code,
+      newValue: value,
+    })),
+  };
+  await backendApi.saveAllUserSettings(userSettingsRequestBody)(await getAccessToken());
 };
