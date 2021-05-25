@@ -6,19 +6,36 @@ import {
 import backendApi from '../../api/backend-api';
 
 export default ({ getAccessToken }) => {
-  const [settings, setSettings] = useState();
+  const [settingsFromBackend, setSettings] = useState();
+  const [settingsToUpdate, setSettingsToUpdate] = useState();
 
   useEffect(() => {
     setSettingsAsync();
   }, []);
-
-  const setSettingsAsync = async () => {
-    setSettings(await fetchSettingsFromBackend());
+  
+  const setSettingValue = (settingCode, settingValueNew) => {
+    const parsedSettingValue = parseInt(settingValueNew, 10);
+    if (!isInteger(parsedSettingValue)) {
+      toast.error('Error on perform operation. Invalid form input. Enter non-zero integer!');
+    }
+    const newSettings = settingsFromBackend?.userSettings.map((setting) => (
+      setting.code === settingCode ? { ...setting, value: settingValueNew } : setting
+    ));
+    setSettingsToUpdate(newSettings);
   };
 
-  async function fetchSettingsFromBackend() {
-    return backendApi.fetchSettings(await getAccessToken());
-  }
+  const handleSaveAllSettings = async () => {
+    await backendApi.saveAllUserSettings(
+      formUserSettingsRequestBody(settingsToUpdate),
+    )(await getAccessToken());
+    toast.info('Trying to save all user settings');
+    await setSettingsAsync();
+    toast.success('Successfully performed operation!');
+  };
+
+  const setSettingsAsync = async () => {
+    setSettings(await backendApi.fetchSettings(await getAccessToken()));
+  };
 
   return (
     <>
@@ -38,7 +55,7 @@ export default ({ getAccessToken }) => {
             </tr>
           </thead>
           <tbody>
-            { settings && settings.userSettings.map(
+            { settingsFromBackend && settingsFromBackend.userSettings.map(
               ({
                 code, value, description, defaultValue, 
               }, index) => (
@@ -61,23 +78,12 @@ export default ({ getAccessToken }) => {
             )}
           </tbody>
         </Table>
-        <Button onClick={() => handleSaveAllSettings(settings)(getAccessToken)}>
+        <Button onClick={() => handleSaveAllSettings(getAccessToken)}>
           Save all changes
         </Button>
       </Container>
     </>
   );
-
-  function setSettingValue(settingCode, settingValueNew) {
-    const parsedSettingValue = parseInt(settingValueNew, 10);
-    if (!isInteger(parsedSettingValue)) {
-      toast.error('Error on perform operation. Invalid form input. Enter integer!');
-    }
-    const newSettings = settings?.userSettings.map((setting) => (
-      setting.code === settingCode ? { ...setting, value: settingValueNew } : setting
-    ));
-    setSettings(newSettings);
-  }
 };
 
 const isInteger = (maybeInteger) => (
@@ -85,12 +91,9 @@ const isInteger = (maybeInteger) => (
     && maybeInteger > -2147483648 && maybeInteger < 2147483647
 );
 
-const handleSaveAllSettings = (settings) => async (getAccessToken) => {
-  const userSettingsRequestBody = {
-    userSettings: settings.userSettings.map(({ code, value }) => ({
-      code,
-      newValue: value,
-    })),
-  };
-  await backendApi.saveAllUserSettings(userSettingsRequestBody)(await getAccessToken());
-};
+const formUserSettingsRequestBody = (settings) => ({
+  userSettings: settings.map(({ code, value }) => ({
+    code,
+    newValue: value,
+  })),
+});
