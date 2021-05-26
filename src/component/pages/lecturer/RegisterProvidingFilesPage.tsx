@@ -112,7 +112,9 @@ export default ({ getAccessToken }: Props) => {
       courseId,
       registeredTimestamp: Date.now(),
     })(accessToken);
-    if (!response.ok) {
+    if (response.ok) {
+      toast.success('Successfully performed operation!');
+    } else {
       const responseBody = await response.json();
       const errorMessage = saveAttendancesResponseBodyToMessageMap[responseBody.errorCode] || '';
       toast.error(`Server side error! ${errorMessage}`);
