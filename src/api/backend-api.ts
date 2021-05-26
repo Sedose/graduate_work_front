@@ -16,7 +16,7 @@ const saveCoordinates = (
 
 const saveStudentsAttendanceFile = (
   jsonToSend : any,
-) => async (accessToken: string) => fetch(`${constants.DEFAULT_BACKEND_API_PATH}/attendance-register-file`, {
+) => (accessToken: string) => fetch(`${constants.DEFAULT_BACKEND_API_PATH}/attendance-register-file`, {
   method: 'POST',
   headers: {
     Authorization: accessToken,

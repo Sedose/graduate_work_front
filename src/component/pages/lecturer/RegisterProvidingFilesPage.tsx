@@ -11,9 +11,11 @@ import { FileInputWrapper, FormWrapper, SelectInput } from '../../../styles/styl
 import schema from './schema';
 import 'react-toastify/dist/ReactToastify.css';
 
-const saveAttendancesResponseStatusToMessageMap = {
-  400: 'Invalid file!',
-  404: 'Cannot find user with such first name, middle name, last name',
+const saveAttendancesResponseBodyToMessageMap = {
+  'access.token.invalid': 'Cannot authorize!',
+  'cannot.extract.parts.from.user.full.name': 'Invalid file!',
+  'cannot.get.user.by.full.name': 'Cannot find user with such first name, middle name, last name!',
+  'to.frequent.file.uploads': 'To many file uploads from you! Try again later!',
 };
 
 export default ({ getAccessToken }: Props) => {
@@ -105,19 +107,16 @@ export default ({ getAccessToken }: Props) => {
 
   async function saveStudentsAttendancesFile(rows) {
     const accessToken = await getAccessToken();
-    return backendApi.saveStudentsAttendanceFile({
+    const response = await backendApi.saveStudentsAttendanceFile({
       attendances: rows,
       courseId,
       registeredTimestamp: Date.now(),
-    })(accessToken).then((resp) => {
-      if (!resp.ok) {
-        throw new Error(resp.status.toString());
-      }
-      toast('Successfully performed operation!');
-    }).catch((e) => {
-      const errorMessage = saveAttendancesResponseStatusToMessageMap[e.message] || '';
+    })(accessToken);
+    if (!response.ok) {
+      const responseBody = await response.json();
+      const errorMessage = saveAttendancesResponseBodyToMessageMap[responseBody.errorCode] || '';
       toast.error(`Server side error! ${errorMessage}`);
-    });
+    }
   }
 
   async function setCourseOptionsFromBackend() {
