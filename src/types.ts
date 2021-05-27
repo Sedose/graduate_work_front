@@ -35,3 +35,10 @@ export interface UserSettingsResponse {
     defaultValue: string,
   }[],
 }
+
+export interface StudentGroupsResponse {
+  studentGroups: {
+    id: string,
+    name: string,
+  }[],
+}

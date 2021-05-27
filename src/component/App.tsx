@@ -89,7 +89,9 @@ const App = ({
             exact
             path="/training-representative-main-page"
             render={() => (
-              <TrainingRepresentativeMainPage />
+              <TrainingRepresentativeMainPage
+                getAccessToken={getAccessToken}
+              />
             )}
           />
           <Route

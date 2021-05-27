@@ -1,6 +1,10 @@
 import constants from '../constants';
 import {
-  UserDetailsResponse, UserCoordinates, CoursesResponse, UserSettingsResponse, 
+  UserDetailsResponse,
+  UserCoordinates,
+  CoursesResponse,
+  UserSettingsResponse,
+  StudentGroupsResponse,
 } from '../types';
 
 const saveCoordinates = (
@@ -66,6 +70,18 @@ const fetchSettings = (
   },
 ));
 
+const fetchStudentGroups = (
+  accessToken: string,
+): Promise<StudentGroupsResponse> => extractData<StudentGroupsResponse>(
+  fetch(
+    `${constants.DEFAULT_BACKEND_API_PATH}/student-groups`, {
+      headers: {
+        Authorization: accessToken,
+      },
+    },
+  ),
+);
+
 const extractData = <T>(promise: Promise<Response>): Promise<T> => promise.then((response) => {
   if (!response.ok) {
     throw new Error(response.statusText);
@@ -81,4 +97,5 @@ export default {
   fetchCourses,
   fetchSettings,
   saveAllUserSettings,
+  fetchStudentGroups,
 };
