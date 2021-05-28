@@ -105,6 +105,7 @@ export default ({
 
   async function setMainPageLinkAsync() {
     const userRole = await appLogin();
+    console.log('userRole: ', userRole);
     setLink({
       STUDENT: '/student-main-page',
       LECTURER: '/lecturer-main-page',

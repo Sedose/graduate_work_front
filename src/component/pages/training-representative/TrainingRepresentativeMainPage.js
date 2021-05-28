@@ -37,9 +37,9 @@ export default ({ getAccessToken }) => {
                           }
                 >
                   <option value={-1}>Please, select some option</option>
-                  {studentGroups.map(
-                    ({ id, name }) => <option key={id} value={id}>{name}</option>,
-                  )}
+                  {/* {studentGroups.map( */}
+                  {/*  ({ id, name }) => <option key={id} value={id}>{name}</option>, */}
+                  {/* )} */}
                 </SelectInput>
               </FormGroup>
               )}
