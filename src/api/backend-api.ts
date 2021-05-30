@@ -9,7 +9,7 @@ import {
 
 const saveCoordinates = (
   coordinates : UserCoordinates,
-) => async (accessToken: string) => fetch(`${constants.DEFAULT_BACKEND_API_PATH}/v1/coordinates`, {
+) => (accessToken: string) => fetch(`${constants.DEFAULT_BACKEND_API_PATH}/v1/coordinates`, {
   method: 'PUT',
   headers: {
     Authorization: accessToken,
@@ -31,7 +31,7 @@ const saveStudentsAttendanceFile = (
 
 const saveAllUserSettings = (
   jsonToSend : any,
-) => async (accessToken: string) => (fetch(`${constants.DEFAULT_BACKEND_API_PATH}/user-settings`, {
+) => (accessToken: string) => (fetch(`${constants.DEFAULT_BACKEND_API_PATH}/user-settings`, {
   method: 'PUT',
   headers: {
     Authorization: accessToken,
@@ -82,6 +82,24 @@ const fetchStudentGroups = (
   ),
 );
 
+const fetchReportByStudentGroupIdAndCourseId = (
+  jsonToSend : any,
+) => (
+  accessToken: string,
+): Promise<any> => {
+  const urlParams = new URLSearchParams(jsonToSend);
+  return extractData<any>(
+    fetch(
+      `${constants.DEFAULT_BACKEND_API_PATH}/student-attendances-report?${urlParams}`, {
+        headers: {
+          Authorization: accessToken,
+          'Content-Type': 'application/json',
+        },
+      },
+    ),
+  );
+};
+
 const extractData = <T>(promise: Promise<Response>): Promise<T> => promise.then((response) => {
   if (!response.ok) {
     throw new Error(response.statusText);
@@ -98,4 +116,5 @@ export default {
   fetchSettings,
   saveAllUserSettings,
   fetchStudentGroups,
+  fetchReportByStudentGroupIdAndCourseId,
 };
