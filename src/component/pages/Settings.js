@@ -4,6 +4,7 @@ import {
   Button, Container, Jumbotron, Table, 
 } from 'reactstrap';
 import backendApi from '../../api/backend-api';
+import { isInteger } from '../../util';
 
 export default ({ getAccessToken }) => {
   const [settingsFromBackend, setSettings] = useState();
@@ -85,11 +86,6 @@ export default ({ getAccessToken }) => {
     </>
   );
 };
-
-const isInteger = (maybeInteger) => (
-  Number.isInteger(maybeInteger)
-    && maybeInteger > -2147483648 && maybeInteger < 2147483647
-);
 
 const formUserSettingsRequestBody = (settings) => ({
   userSettings: settings.map(({ code, value }) => ({

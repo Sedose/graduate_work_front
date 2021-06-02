@@ -20,12 +20,10 @@ export interface UserCoordinates {
   longitude: number,
 }
 
-export interface CoursesResponse {
-  courses: {
+export type CoursesResponse = {
     id: string,
     name: string,
-  }[],
-}
+}[]
 
 export interface UserSettingsResponse {
   userSettings: {

@@ -35,5 +35,6 @@ module.exports = {
     'no-console': 'off',
     'react/prop-types': 'off',
     'consistent-return': 'off',
+    eqeqeq: 'off',
   },
 };

@@ -100,12 +100,11 @@ export default ({
   }, []);
 
   const handleGoToMainPage = async () => {
-    document.location.href = link;
+    document.location.href = link ?? '';
   };
 
   async function setMainPageLinkAsync() {
     const userRole = await appLogin();
-    console.log('userRole: ', userRole);
     setLink({
       STUDENT: '/student-main-page',
       LECTURER: '/lecturer-main-page',

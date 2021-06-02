@@ -82,7 +82,7 @@ const fetchStudentGroups = (
   ),
 );
 
-const fetchReportByStudentGroupIdAndCourseId = (
+const fetchReport = (
   jsonToSend : any,
 ) => (
   accessToken: string,
@@ -100,6 +100,21 @@ const fetchReportByStudentGroupIdAndCourseId = (
   );
 };
 
+const getStudentGroupById = (
+  groupId : any,
+) => (
+  accessToken: string,
+): Promise<any> => extractData<any>(
+  fetch(
+    `${constants.DEFAULT_BACKEND_API_PATH}/student-groups/${groupId}`, {
+      headers: {
+        Authorization: accessToken,
+        'Content-Type': 'application/json',
+      },
+    },
+  ),
+);
+
 const extractData = <T>(promise: Promise<Response>): Promise<T> => promise.then((response) => {
   if (!response.ok) {
     throw new Error(response.statusText);
@@ -116,5 +131,6 @@ export default {
   fetchSettings,
   saveAllUserSettings,
   fetchStudentGroups,
-  fetchReportByStudentGroupIdAndCourseId,
+  fetchReport,
+  getStudentGroupById,
 };

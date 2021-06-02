@@ -10,6 +10,7 @@ import backendApi from '../../../api/backend-api';
 import { FileInputWrapper, FormWrapper, SelectInput } from '../../../styles/styles';
 import schema from './schema';
 import 'react-toastify/dist/ReactToastify.css';
+import { CoursesResponse } from '../../../types';
 
 const saveAttendancesResponseBodyToMessageMap = {
   'access.token.invalid': 'Cannot authorize!',
@@ -24,7 +25,7 @@ export default ({ getAccessToken }: Props) => {
     fileExtension: '',
   });
 
-  const [courseOptions, setCourseOptions] = useState<Courses>();
+  const [courses, setCourses] = useState<CoursesResponse>();
   const [courseId, setCourseId] = useState('1');
 
   useEffect(() => {
@@ -38,7 +39,7 @@ export default ({ getAccessToken }: Props) => {
           <div>Register student providing files from Teams</div>
           <FormWrapper>
             <Form>
-              {courseOptions
+              {courses
               && (
                 <FormGroup>
                   <Label for="course">Select course</Label>
@@ -49,7 +50,7 @@ export default ({ getAccessToken }: Props) => {
                   }
                   >
                     <option value={-1}>Please, select some option</option>
-                    {courseOptions.courses.map(
+                    {courses.map(
                       ({ id, name }) => <option key={id} value={id}>{name}</option>,
                     )}
                   </SelectInput>
@@ -123,9 +124,9 @@ export default ({ getAccessToken }: Props) => {
 
   async function setCourseOptionsFromBackend() {
     const accessToken = await getAccessToken();
-    const courses = await backendApi.fetchCourses(accessToken);
-    setCourseOptions(courses);
-    setCourseId(courses[0] && courses[0].id);
+    const coursesFromBackend = await backendApi.fetchCourses(accessToken);
+    setCourses(coursesFromBackend);
+    setCourseId(coursesFromBackend[0] && coursesFromBackend[0].id);
   }
 
   function isFormInvalid() {
@@ -150,11 +151,4 @@ export default ({ getAccessToken }: Props) => {
 
 interface Props {
   getAccessToken: Function;
-}
-
-interface Courses {
-  courses: {
-    id: string;
-    name: string,
-  }[],
 }
