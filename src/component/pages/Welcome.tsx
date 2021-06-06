@@ -14,20 +14,20 @@ const WelcomeContent = ({
 }: WelcomeProps) => (isAuthenticated && (
 <div>
   <h4>
-    Welcome, {user.displayName}!
+    Добрий день, {user.displayName}!
   </h4>
-  <p>Use the navigation bar at the top of the page to get started.</p>
+  <p>Для початку скористайтеся панеллю навігації у верхній частині сторінки.</p>
 </div>
 )) || (
 <Button color="primary" onClick={authButtonMethod}>
-  Click here to sign in
+  Клацніть тут, щоб увійти
 </Button>
 );
 
 export default ({ isAuthenticated, user, authButtonMethod }: WelcomeProps) => (
   <Jumbotron>
-    <h1>Student attendance management system</h1>
-    <p className="lead">This app is for lecturers, students</p>
+    <h1>Система управління відвідуванням студентів</h1>
+    <p className="lead">Ця програма призначена для викладачів, представників учбових відділів</p>
     <WelcomeContent
       isAuthenticated={isAuthenticated}
       user={user}

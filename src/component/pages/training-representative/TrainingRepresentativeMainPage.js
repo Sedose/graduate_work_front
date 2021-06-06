@@ -61,13 +61,12 @@ export default ({ getAccessToken }) => {
 
   const handleGetReport = async () => {
     if (isFormInvalid()) {
-      toast.error('Invalid options chosen');
+      toast.error('Вибрано недійсні параметри');
     } else {
       const reportByStudentGroupAndCourse = await backendApi.fetchReport({
         studentGroupId,
         courseId,
       })(await getAccessToken());
-      console.log('reportByStudentGroupAndCourse: ', reportByStudentGroupAndCourse);
       setReport(reportByStudentGroupAndCourse);
     }
   };
@@ -89,61 +88,61 @@ export default ({ getAccessToken }) => {
   return (
     <div>
       <Jumbotron>
-        Training representative main page
+        Головна сторінка представника учбової частини
       </Jumbotron>
       Please, select group
       <Form>
         {studentGroups
               && (
               <FormGroup>
-                <Label for="studentGroup">Select student group</Label>
+                <Label for="studentGroup">Виберіть групу студентів</Label>
                 <SelectInput
                   name="studentGroup"
                   onChange={
                               (event) => setStudentGroupId(event.target.value)
                           }
                 >
-                  <option value={-1}>Please, select some option</option>
+                  <option value={-1}>Виберіть потрібну опцію</option>
                   {studentGroups?.map(
                     ({ id, name }) => <option key={id} value={id}>{name}</option>, 
                   )} 
                 </SelectInput>
-                <Label for="course">Select course</Label>
+                <Label for="course">Виберіть курс</Label>
                 <SelectInput
                   name="course"
                   onChange={
                           (event) => setCourseId(event.target.value)
                       }
                 >
-                  <option value={-1}>Please, select some option</option>
+                  <option value={-1}>Виберіть потрібну опцію</option>
                   {courses?.map(
                     ({ id, name }) => <option key={id} value={id}>{name}</option>,
                   )}
                 </SelectInput>
               </FormGroup>
               )}
-        <Button onClick={handleGetReport}>Get report</Button>
+        <Button onClick={handleGetReport}>Завантажити звіт</Button>
       </Form>
       <br />
       {report?.items.length > 0 && (
       <div ref={ref}>
-        <div>Report on student attendance</div> 
-        <div>by group {selectedStudentGroupName}</div>
-        <div>and course {selectedCourseName}</div>
-        <div>Registered by: {report?.lecturerRegisteredBy.firstName}
+        <div>Звіт про відвідуваність студентів</div> 
+        <div>за групою {selectedStudentGroupName}</div>
+        <div>за курсом {selectedCourseName}</div>
+        <div>Зареєстровано викладачем: {report?.lecturerRegisteredBy.firstName}
           {report?.lecturerRegisteredBy.middleName}
           {` ${report?.lecturerRegisteredBy.lastName}`}
         </div>
-        <div>Registered at UTC time: {moment.utc().format()}</div>
+        <div>Зареєстровано в UTC часі: {moment.utc().format()}</div>
         <Table>
           <thead>
             <tr>
               <Th>#</Th>
               <Th>Email</Th>
-              <Th>First name</Th>
-              <Th>Middle name</Th>
-              <Th>Last name</Th>
-              <Th>Attendances percent</Th>
+              <Th>Ім&apos;я</Th>
+              <Th>По батькові</Th>
+              <Th>Прізвище</Th>
+              <Th>Процент відвідування</Th>
             </tr>
           </thead>
           <tbody>
@@ -168,7 +167,7 @@ export default ({ getAccessToken }) => {
       )}
 
       {!report?.items.length > 0 && (
-      <Alert color="warning">Found no records for such parameters</Alert>
+      <Alert color="warning">Не знайдено дані для таких параметрів</Alert>
       )}
     
       <br />
@@ -180,7 +179,7 @@ export default ({ getAccessToken }) => {
             option={options}
           >
             {({ toPdf }) => (
-              <Button onClick={toPdf}>Generate PDF</Button>
+              <Button onClick={toPdf}>Згенерувати PDF</Button>
             )}
           </ReactToPdf>
         )}

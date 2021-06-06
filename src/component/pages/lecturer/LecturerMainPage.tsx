@@ -15,10 +15,15 @@ export default () => {
       {choiceRegisterProvidingFiles && <Redirect to="/register/providing-files" />}
       <div>
         <Jumbotron>
-          <div>Lecturer side</div>
+          <div>Сторінка викладача</div>
           <ButtonGroupWrapper>
             <ButtonGroup>
-              <Button color="primary" onClick={() => setChoiceRegisterProvidingFiles(true)}>Register providing files</Button>
+              <Button color="primary" onClick={() => setChoiceRegisterProvidingFiles(true)}>
+                Зареєструвати присутність студентів, використовуючи файл Teams
+              </Button>
+              <Button color="primary" onClick={() => setChoiceRegisterProvidingFiles(true)}>
+                Зареєструвати присутність студентів, використовуючи у застосунку
+              </Button>
             </ButtonGroup>
           </ButtonGroupWrapper>
         </Jumbotron>

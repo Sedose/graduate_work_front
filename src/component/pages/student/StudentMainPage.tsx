@@ -5,11 +5,11 @@ import { Button, Jumbotron } from 'reactstrap';
 export default () => (
   <div>
     <Jumbotron paragraph variant="h6">
-      Student main page
+      Головна сторінка студента
     </Jumbotron>
     <Jumbotron paragraph variant="h6">
-      Welcome, student
+      Добрий день!
     </Jumbotron>
-    <Button><Link to="register-coordinates">Register coordinates</Link></Button>
+    <Button><Link to="register-coordinates">Зареєструвати координати</Link></Button>
   </div>
 );

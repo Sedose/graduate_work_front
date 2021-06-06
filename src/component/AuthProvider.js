@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { 
+  useState,
+  useEffect,
+} from 'react';
 import { PublicClientApplication } from '@azure/msal-browser';
 
 import config from '../Confing';
@@ -10,6 +13,13 @@ export default (WrappedComponent) => () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState({});
 
+  useEffect(() => {
+    const accounts = publicClientApplication.getAllAccounts();
+    if (accounts?.length > 0 && !isAuthenticated) {
+      getUserProfile();
+    }
+  }, []);
+
   const publicClientApplication = new PublicClientApplication({
     auth: {
       clientId: config.appId,
@@ -20,13 +30,6 @@ export default (WrappedComponent) => () => {
       storeAuthStateInCookie: true,
     },
   });
-
-  useEffect(() => {
-    const accounts = publicClientApplication.getAllAccounts();
-    if (accounts?.length > 0 && !isAuthenticated) {
-      getUserProfile();
-    }
-  }, []);
 
   const getAccessToken = (scopes) => Promise.resolve(
     publicClientApplication.getAllAccounts(),

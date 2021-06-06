@@ -36,20 +36,20 @@ export default ({ getAccessToken }: Props) => {
     <>
       <div>
         <Jumbotron>
-          <div>Register student providing files from Teams</div>
+          <div>Зареєструйте студента, надаючи файли від Teams</div>
           <FormWrapper>
             <Form>
               {courses
               && (
                 <FormGroup>
-                  <Label for="course">Select course</Label>
+                  <Label for="course">Вибрати курс</Label>
                   <SelectInput
                     name="course"
                     onChange={
                     (event) => setCourseId(event.target.value)
                   }
                   >
-                    <option value={-1}>Please, select some option</option>
+                    <option value={-1}>Будь ласка, оберіть опцію</option>
                     {courses.map(
                       ({ id, name }) => <option key={id} value={id}>{name}</option>,
                     )}
@@ -57,7 +57,7 @@ export default ({ getAccessToken }: Props) => {
                 </FormGroup>
               )}
               <FormGroup>
-                <Label for="fileInput">Select attendance file</Label>
+                <Label for="fileInput">Вибрати файл відвідування</Label>
                 <FileInputWrapper>
                   <input
                     name="fileInput"
@@ -68,7 +68,7 @@ export default ({ getAccessToken }: Props) => {
                   />
                 </FileInputWrapper>
               </FormGroup>
-              <Button color="primary" onClick={() => handleSubmission()}>Upload student attendance file</Button>
+              <Button color="primary" onClick={() => handleSubmission()}>Завантажити</Button>
             </Form>
           </FormWrapper>
         </Jumbotron>
@@ -83,12 +83,12 @@ export default ({ getAccessToken }: Props) => {
 
   function handleSubmission() {
     if (isFormInvalid()) {
-      toast.error('Error on perform operation. Invalid form input. File, course should be selected!');
+      toast.error('Помилка при виконанні операції. Недійсне введення форми. Файл, курс слід вибрати!');
     } else {
       ({
         csv: saveCsv,
         xlsx: saveXlsx,
-      }[selectedFile.fileExtension] || (() => toast.error('Error on perform operation. Invalid selected file extension!')))();
+      }[selectedFile.fileExtension] || (() => toast.error('Помилка при виконанні операції. Недійсне вибране розширення файлу!')))();
     }
   }
 
@@ -114,7 +114,7 @@ export default ({ getAccessToken }: Props) => {
       registeredTimestamp: Date.now(),
     })(accessToken);
     if (response.ok) {
-      toast.success('Successfully performed operation!');
+      toast.success('Успішно виконана операція!');
     } else {
       const responseBody = await response.json();
       const errorMessage = saveAttendancesResponseBodyToMessageMap[responseBody.errorCode] || '';

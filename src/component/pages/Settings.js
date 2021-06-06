@@ -17,7 +17,7 @@ export default ({ getAccessToken }) => {
   const setSettingValue = (settingCode, settingValueNew) => {
     const parsedSettingValue = parseInt(settingValueNew, 10);
     if (!isInteger(parsedSettingValue)) {
-      toast.error('Error on perform operation. Invalid form input. Enter non-zero integer!');
+      toast.error('Помилка при виконанні операції. Введіть ненульове ціле число!');
     }
     const newSettings = settingsFromBackend?.userSettings.map((setting) => (
       setting.code === settingCode ? { ...setting, value: settingValueNew } : setting
@@ -26,12 +26,16 @@ export default ({ getAccessToken }) => {
   };
 
   const handleSaveAllSettings = async () => {
-    await backendApi.saveAllUserSettings(
-      formUserSettingsRequestBody(settingsToUpdate),
-    )(await getAccessToken());
-    toast.info('Trying to save all user settings');
-    await setSettingsAsync();
-    toast.success('Successfully performed operation!');
+    if (isSettingsInvalid(settingsToUpdate)) {
+      toast.error('Введіть ненульове натуральне число');
+    } else {
+      await backendApi.saveAllUserSettings(
+        formUserSettingsRequestBody(settingsToUpdate),
+      )(await getAccessToken());
+      toast.info('Усі налаштування користувача зберігаються...');
+      await setSettingsAsync();
+      toast.success('Успішно виконана операція!');
+    }
   };
 
   const setSettingsAsync = async () => {
@@ -41,18 +45,17 @@ export default ({ getAccessToken }) => {
   return (
     <>
       <Jumbotron>
-        <h1>Managing user settings</h1>
+        <h1>Керування налаштуваннями користувача</h1>
       </Jumbotron>
       <Container>
         <Table>
           <thead>
             <tr>
               <th>#</th>
-              <th>Code</th>
-              <th>Description</th>
-              <th>Value</th>
-              <th>Default value</th>
-              <th>New value</th>
+              <th>Опис</th>
+              <th>Значення</th>
+              <th>Значення за замовчуванням</th>
+              <th>Нове значення</th>
             </tr>
           </thead>
           <tbody>
@@ -62,14 +65,13 @@ export default ({ getAccessToken }) => {
               }, index) => (
                 <tr key={code}>
                   <th scope="row">{index + 1}</th>
-                  <td>{code}</td>
                   <td>{description}</td>
                   <td>{value}</td>
                   <td>{defaultValue}</td>
                   <td>
                     <input
                       type="number"
-                      min={-2147483648}
+                      min={1}
                       max={2147483647}
                       onChange={(event) => setSettingValue(code, event.target.value)}
                     />
@@ -80,7 +82,7 @@ export default ({ getAccessToken }) => {
           </tbody>
         </Table>
         <Button onClick={() => handleSaveAllSettings(getAccessToken)}>
-          Save all changes
+          Зберегти всі зміни
         </Button>
       </Container>
     </>
@@ -93,3 +95,7 @@ const formUserSettingsRequestBody = (settings) => ({
     newValue: value,
   })),
 });
+
+const isSettingsInvalid = (settings) => (
+  settings.some(({ value }) => parseInt(value, 10) <= 0)
+);

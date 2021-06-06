@@ -69,7 +69,7 @@ const AuthNavItem = ({
       <h5 className="dropdown-item-text mb-0">{user.displayName}</h5>
       <p className="dropdown-item-text text-muted mb-0">{user.email}</p>
       <DropdownItem divider />
-      <DropdownItem onClick={logout}>Sign Out</DropdownItem>
+      <DropdownItem onClick={logout}>Вийти</DropdownItem>
     </DropdownMenu>
   </UncontrolledDropdown>
   )) || (
@@ -79,7 +79,7 @@ const AuthNavItem = ({
       className="btn-link nav-link border-0"
       color="link"
     >
-      Sign In
+      Увійти
     </Button>
   </NavItem>
   )
@@ -121,19 +121,14 @@ export default ({
           <Collapse isOpen={isOpen} navbar>
             <Nav className="mr-auto" navbar>
               <NavItem>
-                <RouterNavLink to="/" className="nav-link" exact>
-                  Home
-                </RouterNavLink>
-              </NavItem>
-              <NavItem>
                 <RouterNavLink to="" className="nav-link" exact onClick={handleGoToMainPage}>
-                  Main page
+                  Головна сторінка
                 </RouterNavLink>
               </NavItem>
               {isAuthenticated && (
               <NavItem>
                 <RouterNavLink to="/settings" className="nav-link" exact>
-                  Settings
+                  Налаштування
                 </RouterNavLink>
               </NavItem>
               )}
