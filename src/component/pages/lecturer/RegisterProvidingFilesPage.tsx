@@ -36,7 +36,7 @@ export default ({ getAccessToken }: Props) => {
     <>
       <div>
         <Jumbotron>
-          <div>Зареєструйте студента, надаючи файли від Teams</div>
+          <div>Зареєструвати студента, надаючи файли від Teams</div>
           <FormWrapper>
             <Form>
               {courses

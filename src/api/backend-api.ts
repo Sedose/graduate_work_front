@@ -82,6 +82,18 @@ const fetchStudentGroups = (
   ),
 );
 
+const fetchSpecialties = (
+  accessToken: string,
+): Promise<StudentGroupsResponse> => extractData<StudentGroupsResponse>(
+  fetch(
+    `${constants.DEFAULT_BACKEND_API_PATH}/specialties`, {
+      headers: {
+        Authorization: accessToken,
+      },
+    },
+  ),
+);
+
 const fetchReport = (
   jsonToSend : any,
 ) => (
@@ -133,4 +145,5 @@ export default {
   fetchStudentGroups,
   fetchReport,
   getStudentGroupById,
+  fetchSpecialties,
 };

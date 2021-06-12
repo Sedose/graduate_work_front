@@ -35,6 +35,10 @@ const Td = styled.th`
   border: 1px solid black;
 `;
 
+const Report = styled.th`
+  
+`;
+
 export default ({ getAccessToken }) => {
   const [studentGroups, setStudentGroups] = useState();
   const [studentGroupId, setStudentGroupId] = useState();
@@ -125,7 +129,7 @@ export default ({ getAccessToken }) => {
       </Form>
       <br />
       {report?.items.length > 0 && (
-      <div ref={ref}>
+      <Report ref={ref}>
         <div>Звіт про відвідуваність студентів</div> 
         <div>за групою {selectedStudentGroupName}</div>
         <div>за курсом {selectedCourseName}</div>
@@ -163,7 +167,7 @@ export default ({ getAccessToken }) => {
           </tbody>
         </Table>
         
-      </div>
+      </Report>
       )}
 
       {!report?.items.length > 0 && (
