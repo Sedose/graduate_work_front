@@ -14,6 +14,7 @@ import TrainingRepresentativeMainPage from './pages/training-representative/Trai
 import Copyright from './Copyright';
 import RegisterProvidingFilesPage from './pages/lecturer/RegisterProvidingFilesPage';
 import Settings from './pages/Settings';
+import RegisterManually from './pages/lecturer/RegisterManually';
 
 const PageDiv = styled.div`
   display: flex;
@@ -99,6 +100,13 @@ const App = ({
             path="/register/providing-files"
             render={() => (
               <RegisterProvidingFilesPage getAccessToken={getAccessToken} />
+            )}
+          />
+          <Route
+            exact
+            path="/register/manually"
+            render={() => (
+              <RegisterManually getAccessToken={getAccessToken} />
             )}
           />
           <Route

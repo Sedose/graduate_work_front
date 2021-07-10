@@ -9,10 +9,12 @@ const ButtonGroupWrapper = styled.div`
 
 export default () => {
   const [choiceRegisterProvidingFiles, setChoiceRegisterProvidingFiles] = useState(false);
+  const [choiceRegisterManually, setChoiceRegisterManually] = useState(false);
 
   return (
     <>
       {choiceRegisterProvidingFiles && <Redirect to="/register/providing-files" />}
+      {choiceRegisterManually && <Redirect to="/register/manually" />}
       <div>
         <Jumbotron>
           <div>Сторінка викладача</div>
@@ -21,8 +23,8 @@ export default () => {
               <Button color="primary" onClick={() => setChoiceRegisterProvidingFiles(true)}>
                 Зареєструвати присутність студентів, використовуючи файл Teams
               </Button>
-              <Button color="primary" onClick={() => setChoiceRegisterProvidingFiles(true)}>
-                Зареєструвати присутність студентів, використовуючи у застосунку
+              <Button color="primary" onClick={() => setChoiceRegisterManually(true)}>
+                Зареєструвати присутність студентів власноруч
               </Button>
             </ButtonGroup>
           </ButtonGroupWrapper>
